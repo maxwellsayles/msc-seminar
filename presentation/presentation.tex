@@ -1,6 +1,8 @@
 \documentclass{beamer}
 
 \usepackage{amsfonts,amsbsy,amsthm,amsmath,amssymb}
+\usepackage{beamerthemesplit}
+\usepackage{comment}
 \usepackage{listings}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -117,9 +119,23 @@
 }
 
 \usetheme{Copenhagen}
-\usecolortheme{orchid}
-%\setbeamertemplate{footline}[frame number]
-% TODO: slide numbers
+\setbeamertemplate{navigation symbols}{} %no nav symbols
+
+%\makeatletter
+\setbeamertemplate{footline}
+{%
+  \leavevmode%
+  \hbox{\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm plus1fill,rightskip=.3cm]{author in head/foot}%
+    \usebeamerfont{author in head/foot} \hspace*{2em} \insertshortauthor \hspace*{2em}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+    \usebeamerfont{title in head/foot} \hspace*{2em} \insertshorttitle \hspace*{2em}
+    \insertframenumber / \inserttotalframenumber \hspace*{2em}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+%\makeatother
+
 
 
 % What's important is to state and motivate the topic, highlight/outline your original results and contributions, give an overview of your methodology, assess significance, and give some interesting future work.  
@@ -263,6 +279,62 @@ SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal cla
 \begin{itemize}
 \item Extension of SPAR 
 \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Factorization of the Order}
+\framesubtitle{Example \#1}
+
+$N = 9223375433619660527, k = 1, \Delta = -kN$
+\begin{itemize}
+\item $\ord(\idealclass{p_{19}}) = 2^2 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{37}}) = 2^3 \cdot 3 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{43}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{47}}) = 2^3 \cdot 3 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{59}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
+\end{itemize}
+
+where $\ideal{p_p} = [p, (b + \sqrt\Delta)/2]$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Factorization of the Order}
+\framesubtitle{Example \#2}
+
+$N = 18278283564428467183, k = 3, \Delta = -4kN$
+\begin{itemize}
+\item $\ord(\idealclass{p_{11}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{17}}) = 2 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{23}}) = 2 \cdot 3 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{29}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{31}}) = 2 \cdot 5 \cdot 59 \cdot 157 \cdot 1451$
+
+\end{itemize}
+
+where $\ideal{p_p} = [p, (b + \sqrt\Delta)/2]$.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Prime Power Bound}
+To 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Reusing the Order}
+
+Once the order of an ideal class is known, we skip the search phase.
+
+\begin{itemize}
+\item The exponentiation stage removed all small primes $\Rightarrow$ search stage not necessary.
+
+\item The exponentiation stage did not remove all small primes $\Rightarrow$ stepping coprime will never find the order.
+\end{itemize}
+
+For $N \le 2^{80}$, this is expected to work better than 97.7\% of the time.
 
 \end{frame}
 
