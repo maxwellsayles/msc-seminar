@@ -121,7 +121,8 @@
 \usetheme{Copenhagen}
 \setbeamertemplate{navigation symbols}{} %no nav symbols
 
-%\makeatletter
+% TODO: Force page count
+\makeatletter
 \setbeamertemplate{footline}
 {%
   \leavevmode%
@@ -130,12 +131,11 @@
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
     \usebeamerfont{title in head/foot} \hspace*{2em} \insertshorttitle \hspace*{2em}
-    \insertframenumber / \inserttotalframenumber \hspace*{2em}
+    \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
   \end{beamercolorbox}}%
   \vskip0pt%
 }
-%\makeatother
-
+\makeatother
 
 
 % What's important is to state and motivate the topic, highlight/outline your original results and contributions, give an overview of your methodology, assess significance, and give some interesting future work.  
@@ -160,41 +160,112 @@
 Major goals:
 \begin{itemize}
 \item Improve the performance of arithmetic in the ideal class group of imaginary quadratic number fields.
-\item An optimized implementation of the SuperSPAR integer factoring algorithm.
+	\begin{itemize}
+	\item Specifically when the discriminant of the class group is smaller than 128-bits.
+	\end{itemize}
+\item An optimized implementation of the SuperSPAR integer factoring algorithm for integers smaller than 128-bits.
 \end{itemize}
 
 \end{frame}
 
-% MAJOR CONTRIBUTIONS
+% SOME USES
 \begin{frame}
-\frametitle{Major Contributions}
+\frametitle{Some Uses}
+These are just a few possible applications. \bigskip
+
+Ideal class group:
+\begin{itemize}
+\item Class group tabulation for larger discriminants \break [Ramachandran 2006].
+\end{itemize}
+
+\bigskip
+Integer Factoring:
+\begin{itemize}
+\item Factoring left-overs after sieving in algorithms like the number field sieve using multiple large primes.
+\end{itemize}
+
+\end{frame}
+
+% CONTRIBUTIONS TO IDEAL CLASS GROUP ARITHMETIC
+\begin{frame}
+\frametitle{Contributions}
+Contributions to ideal class group arithmetic:
 \begin{itemize} %[<+->]
-\item An implementation of arithmetic in the ideal class group of imaginary quadratic number fields.
-\item A method for generating 2,3 representations useful for exponentiation by power primorials.
-\item A new integer factoring algorithm with implementation.
+\item Optimized implementations of arithmetic for 64-bit and 128-bit discriminants.
+	\begin{itemize}
+	\item 3 to 4 times faster on average than Pari.
+	\end{itemize}
+\item Optimized implementations of the extended greatest common divisor for 32-bit, 64-bit, and 128-bit arguments.
+	\begin{itemize}
+	\item 32-bit uses extended Euclidean algorithm.
+		\begin{itemize}
+		\item 1.6 times faster on average than Pari and 3.4 times faster on average than GMP.
+		\end{itemize}
+	\item 64-bit left-to-right binary extended greatest common divisor.
+		\begin{itemize}
+		\item 1.3 times faster on average than Pari and 2 times faster on average than GMP.
+		\end{itemize}
+	\item 128-bit Lehmer's extended greatest common divisor.
+		\begin{itemize}
+		\item Uses the 64-bit left-to-right binary extended greatest common divisor as an inner loop.
+		\item About 1.13 times faster than both Pari and GMP on average.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+% CONTRIBUTIONS TO INTEGER FACTORING
+\begin{frame}
+\frametitle{Contributions Continued}
+Contributions to integer factoring:
+
+\begin{itemize}
+\item Left-to-right best approximations method for computing 2,3 representations.
+	\begin{itemize}
+	\item Tested using power primorials.
+	\item Best representations for exponentiation of the methods tested.
+	\item Exponentiation is about 1.4 times faster on average than with the binary representations.
+		\begin{itemize}
+		\item Representations are computed in advance.
+		\end{itemize}
+	\end{itemize}
+\item SuperSPAR integer factoring algorithm.
+	\begin{itemize}
+	\item Extends SPAR using bounded primorial steps search.
+	\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
+	\item On average, fastest integer factoring algorithm for integers of size 50-bits to 62-bits of the implementations tested.
+	\end{itemize}
 \end{itemize}
 \end{frame}
   
-% IDEAL CLASS IMPL
+% IDEAL CLASS GROUP ARITHMETIC
 \begin{frame}
 \frametitle{Arithmetic in the Ideal Class Group}
+Our implementation is based on NUCOMP, NUDUPL, and NUCUBE. % TODO CITE
+
 \begin{itemize}
-\item Specialized implementations for 64-bit and 128-bit discriminants.
-\item Improves upon Pari for discriminants smaller than 140-bits.
+\item Extended greatest common divisor.
+\item Partial extended greatest common divisor.
+	\begin{itemize}
+	\item Termination bound is approximated using a square root approximation.
+	\end{itemize}
 \end{itemize}
 \end{frame}  
-  
+
 % XGCD
 \begin{frame}
 \frametitle{Extended Greatest Common Divisor}
-Compute solutions to equations of the form
+Extended greatest common divisor solves
 \[
 	s = Ua + Vb = \gcd(a, b).
 \]
-
-\begin{itemize}
-\item Specialized implementations for 32-bit, 64-bit, and 128-bit words.
-\end{itemize}
+Partial extended greatest common divisor solves
+TODO: This is madness
+\begin{eqnarray*}
+	s &= (-1)^z Ua + (-1)^{z+1} Vb \\
+	t &= (-1)^z Xa + (-1)^{z+1} Yb
+\end{eqnarray*}
+for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUCUBE.
 
 \end{frame}
 
@@ -337,6 +408,57 @@ Once the order of an ideal class is known, we skip the search phase.
 For $N \le 2^{80}$, this is expected to work better than 97.7\% of the time.
 
 \end{frame}
+
+
+
+
+% SQUARE ROOT APPROXIMATION
+\begin{frame}
+\frametitle{Approximate Square Root}
+Notice that
+\begin{equation*}
+\begin{array}{rrlrlr}
+	& x^{1/2} &=& 2^{(\log_2x)/2} &\approx& 2^{\floor{\floor{\log_2x+1}/2}} \\
+	\Rightarrow & x / x^{1/2} &=& x / 2^{(\log_2x)/2} &\approx& x / 2^{\floor{\floor{\log_2x+1}/2}},
+\end{array}
+\end{equation*}
+which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bits.
+\end{frame}
+
+% SQRT OPTIMIZATION
+\begin{frame}
+\frametitle{Square Root Approximation}
+\framesubtitle{64-bit Multiplication}
+\begin{figure}
+\includegraphics[scale=0.86]{compose-sqrtopt-64}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Square Root Approximation}
+\framesubtitle{128-bit Multiplication}
+\begin{figure}
+\includegraphics[scale=0.86]{compose-sqrtopt-128}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Square Root Approximation}
+\framesubtitle{64-bit Cubing}
+\begin{figure}
+\includegraphics[scale=0.86]{cube-sqrtopt-64}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Square Root Approximation}
+\framesubtitle{128-bit Cubing}
+\begin{figure}
+\includegraphics[scale=0.86]{cube-sqrtopt-128}
+\end{figure}
+\end{frame}
+
+
 
 
 \end{document}
