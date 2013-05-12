@@ -62,62 +62,10 @@
 \newcommand{\pclass}{\idealclass p}
 \newcommand{\qclass}{\idealclass q}
 \newcommand{\idclass}{[\mathcal O_\Delta]}
-\newcommand{\hdelta}{\sqrt{|\Delta|}}
-
-\newcommand{\hash}{\textrm{hash}_{\textrm{32}}}
 
 \newcommand{\ith}{i^{\textrm{th}}}
 
-\newcommand{\mygraph}[3]{
-	\begin{figure}[htb]
-	\centering
-	\includegraphics{#1}
-	\caption{#3}
-	\label{#2}
-	\end{figure}
-}
-
-% Same as \mygraph only it allows for a custom TOC description.
-\newcommand{\mygraphX}[4]{
-	\begin{figure}[htb]
-	\centering
-	\includegraphics{#1}
-	\caption[#4]{#3}
-	\label{#2}
-	\end{figure}
-}
-
-\newcommand{\mygraphXPNG}[4]{
-	\begin{figure}[htb]
-	\centering
-	\includegraphics[scale=0.5]{#1}
-	\caption[#4]{#3}
-	\label{#2}
-	\end{figure}
-}
-
-\newcommand{\mygraphTwo}[4]{
-	\begin{figure}[htb]
-	\centering
-	\includegraphics{#1}
-	\includegraphics{#2}
-	\caption{#4}
-	\label{#3}
-	\end{figure}
-}
-
-% Same as \mygraphTwo, but allows for a custom TOC desc.
-\newcommand{\mygraphTwoX}[5]{
-	\begin{figure}[htb]
-	\centering
-	\includegraphics{#1}
-	\includegraphics{#2}
-	\caption[#5]{#4}
-	\label{#3}
-	\end{figure}
-}
-
-\graphicspath{{eps/}}
+\graphicspath{{eps/}{png/}}
 
 \title[Ideal Class Group]{Improved Arithmetic in the Ideal Class Group of Imaginary Quadratic Number Fields}
 \subtitle{With an Application to Integer Factoring}
@@ -186,7 +134,7 @@ These are just a few possible applications. \bigskip
 
 Ideal class group:
 \begin{itemize}
-\item Class group tabulation for larger discriminants \break [Ramachandran 2006].
+\item Class group tabulation for larger discriminants \break [Ramachandran2006].
 \end{itemize}
 
 \bigskip
@@ -297,7 +245,7 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 \begin{frame}
 \frametitle{Brent's Left-to-Right Binary XGCD}
 \begin{algorithmic}[1]
-\Require $a, b \in \ZZgez$
+\Procedure{BrentXGCD}{$a, b}$ \Comment{$a, b \in \ZZgez$}
 \State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
 \While {$t > 0$}
 	\State find the largest $k$ such that $2^k t \le s$
@@ -306,6 +254,7 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 	\If {$s < t$} swap the rows of the matrix \EndIf
 \EndWhile
 \State \Return $(s, U, V)$
+\EndProcedure
 \end{algorithmic}
 \end{frame}
 
@@ -486,7 +435,7 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 % SQRT OPTIMIZATION
 \begin{frame}
 \frametitle{Square Root Approximation}
-\framesubtitle{64-bit Multiplication}
+\framesubtitle{64-bit ideal multiplication}
 \begin{figure}
 \includegraphics[scale=0.86]{compose-sqrtopt-64}
 \end{figure}
@@ -494,7 +443,7 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 
 \begin{frame}
 \frametitle{Square Root Approximation}
-\framesubtitle{128-bit Multiplication}
+\framesubtitle{128-bit ideal multiplication}
 \begin{figure}
 \includegraphics[scale=0.86]{compose-sqrtopt-128}
 \end{figure}
@@ -502,7 +451,7 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 
 \begin{frame}
 \frametitle{Square Root Approximation}
-\framesubtitle{64-bit Cubing}
+\framesubtitle{64-bit ideal cubing}
 \begin{figure}
 \includegraphics[scale=0.86]{cube-sqrtopt-64}
 \end{figure}
@@ -510,12 +459,47 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 
 \begin{frame}
 \frametitle{Square Root Approximation}
-\framesubtitle{128-bit Cubing}
+\framesubtitle{128-bit ideal cubing}
 \begin{figure}
 \includegraphics[scale=0.86]{cube-sqrtopt-128}
 \end{figure}
 \end{frame}
 
+\begin{frame}
+\frametitle{SuperSPAR Search Space}
+\framesubtitle{48-bit semiprimes}
+\begin{figure}
+\includegraphics[scale=0.47]{bits-48-3d.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{SuperSPAR Search Space}
+\framesubtitle{56-bit semiprimes}
+\begin{figure}
+\includegraphics[scale=0.47]{bits-56-3d.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{SuperSPAR Search Space}
+\framesubtitle{64-bit semiprimes}
+\begin{figure}
+\includegraphics[scale=0.47]{bits-64-3d.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{SuperSPAR Search Space}
+\framesubtitle{72-bit semiprimes}
+\begin{figure}
+\includegraphics[scale=0.47]{bits-72-3d.png}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{SuperSPAR Search Space}
+\framesubtitle{80-bit semiprimes}
+\begin{figure}
+\includegraphics[scale=0.47]{bits-80-3d.png}
+\end{figure}
+\end{frame}
 
 
 
