@@ -1,5 +1,7 @@
 \documentclass{beamer}
 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \usepackage{amsfonts,amsbsy,amsthm,amsmath,amssymb}
 \usepackage{beamerthemesplit}
 \usepackage{comment}
@@ -9,6 +11,15 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator{\ord}{ord}
 \DeclareMathOperator{\sign}{sign}
+
+\algtext*{EndWhile}      % Remove "end while" text
+\algtext*{EndIf}         % Remove "end if" text
+\algtext*{EndFor}        % Remove "end for" text
+\algtext*{EndProcedure}  % Remove "end procedure" text
+\renewcommand{\algorithmiccomment}[1]{\hfill \{#1\}}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+\newcommand{\algnewline}{\par\noindent\hskip\algorithmicindent}
 
 \newcommand{\CC}{\mathbb{C}}
 \newcommand{\NN}{\mathbb{N}}
@@ -254,7 +265,7 @@ Our implementation is based on NUCOMP, NUDUPL, and NUCUBE. % TODO CITE
 
 % XGCD
 \begin{frame}
-\frametitle{Extended Greatest Common Divisor}
+\frametitle{Extended Greatest Common Divisor (XGCD)}
 Extended greatest common divisor solves
 \[
 	s = Ua + Vb = \gcd(a, b).
@@ -271,14 +282,50 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 
 % XGCD Experiments
 \begin{frame}
-\frametitle{Extended Greatest Common Divisor Experiments}
-TODO: A lare set of random numbers
+\frametitle{XGCD Experiments}
+\begin{itemize}
+\item 32-bit, 64-bit, 128-bit implementations.
+\item Extended Euclidean Algorithm.
+\item Windowed right-to-left binary XGCDs (Stein).
+\item Left-to-right binary XGCDs (Shallit and Sorenson, Brent\footnote{Not in thesis.}, and our simplified).
+\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and L2R).
+\item 1,000,000 pseudorandom positive integer pairs $(a,b)$ for each bit size.
+\end{itemize}
+\end{frame}
+
+% BRENT'S XGCD
+\begin{frame}
+\frametitle{Brent's Left-to-Right Binary XGCD}
+\begin{algorithmic}[1]
+\Require $a, b \in \ZZgez$
+\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
+\While {$t > 0$}
+	\State find the largest $k$ such that $2^k t \le s$
+	\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixtt{1}{-2^k}{0}{1} \cdot
+		    \matrixThreeTwo{s}{U}{V}{t}{X}{Y}$
+	\If {$s < t$} swap the rows of the matrix \EndIf
+\EndWhile
+\State \Return $(s, U, V)$
+\end{algorithmic}
 \end{frame}
 
 % XGCD Results
 \begin{frame}
 \frametitle{Extended Greatest Common Divisor Results}
 TODO: Insert picture
+\end{frame}
+
+% Partial XGCD Experiments
+\begin{frame}
+\frametitle{Partial XGCD Experiments}
+Operations of XGCD must be unimodular and partial quotients are terms in a simple continued fraction expansion\footnote{Results are not in thesis}.
+\begin{itemize}
+\item 32-bit, 64-bit, 128-bit implementations.
+\item Extended Euclidean Algorithm.
+\item Left-to-right binary XGCD (Brent).
+\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and L2R).
+\item 1,000,000 pseudorandom positive integer triples $(a, b, T)$ with $0 \le b \le a$ and $0 \le T \le \sqrt a$.
+\end{itemize}
 \end{frame}
 
 % IDEAL CLASS GROUP EXPERIMENTS
@@ -305,6 +352,17 @@ for some ideal class $\aclass$ and exponent
 	E = \prod_{i=2}^k {p_i}^{e_i}
 \]
 where $p_i$ is the $\ith$ prime.
+\end{frame}
+
+% EXPONENTIATION METHODS
+\begin{frame}
+\frametitle{Representations Tested}
+Representations Tested:
+\begin{itemize}
+\item Binary, Non-Adjacent Form.
+\item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
+\item Left-to-Right (Berth{\'e} and Imbert)
+\end{itemize}
 \end{frame}
 
 % L2R BEST APPROXIMATIONS
