@@ -129,7 +129,7 @@ Major goals:
 
 % SOME USES
 \begin{frame}
-\frametitle{Some Uses}
+\frametitle{Some Possible Applications}
 These are just a few possible applications. \bigskip
 
 Ideal class group:
@@ -217,6 +217,7 @@ Our implementation is based on NUCOMP, NUDUPL, and NUCUBE. % TODO CITE
 \end{frame}  
 
 % XGCD
+\begin{comment}
 \begin{frame}
 \frametitle{Extended Greatest Common Divisor (XGCD)}
 Extended greatest common divisor solves
@@ -232,6 +233,7 @@ TODO: This is madness
 for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUCUBE.
 
 \end{frame}
+\end{comment}
 
 % XGCD Experiments
 \begin{frame}
@@ -265,7 +267,7 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 
 % XGCD Results
 \begin{frame}
-\frametitle{Extended Greatest Common Divisor Results}
+\frametitle{XGCD Results}
 TODO: Insert picture
 \end{frame}
 
@@ -316,6 +318,16 @@ TODO: Took about a day
 \begin{frame}
 \frametitle{Ideal Class Group Results}
 TODO: insert pretty picture
+\end{frame}
+
+% SPAR/SUPERSPAR
+\begin{frame}
+\frametitle{SPAR/SuperSPAR}
+Two stages:
+\begin{itemize}
+\item Exponentiate a random ideal class.
+\item Search for the order of the resulting ideal class.
+\end{itemize}
 \end{frame}
 
 % EXPONENTIATION
@@ -601,7 +613,26 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \end{figure}
 \end{frame}
 
-
+\begin{frame}
+\frametitle{SPAR -- Expanding the 2-Sylow Group}
+\begin{table}
+\centering
+\begin{tabular}{| r | r | r |}
+	\hline
+	Bits & With 2-Sylow Group & Without 2-Sylow Group \\
+	\hline
+	16 &   48.05208 &   48.02160 \\
+	20 &   84.20318 &   84.09526 \\
+	24 &  197.02479 &  196.84587 \\
+	28 &  463.70674 &  463.60538 \\
+	32 &  937.57875 &  935.81785 \\
+	36 & 1709.55629 & 1706.32960 \\
+	40 & 3255.31447 & 3248.67998 \\
+	\hline
+\end{tabular}
+\caption{Average time in microseconds to factor using SPAR when the number of ideals per class group is bound by the size of the integer to factor.}
+\end{table}
+\end{frame}
 
 \end{document}
 
