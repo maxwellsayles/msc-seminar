@@ -134,7 +134,7 @@ These are just a few possible applications. \bigskip
 
 Ideal class group:
 \begin{itemize}
-\item Class group tabulation for larger discriminants \break [Ramachandran2006].
+\item Class group tabulation for larger discriminants \break (Ramachandran2006).
 \end{itemize}
 
 \bigskip
@@ -150,11 +150,11 @@ Integer Factoring:
 \frametitle{Contributions}
 Contributions to ideal class group arithmetic:
 \begin{itemize} %[<+->]
-\item Optimized implementations of arithmetic for 64-bit and 128-bit discriminants.
+\item Optimized for 64 and 128-bit arithmetic.
 	\begin{itemize}
 	\item 3 to 4 times faster on average than Pari.
 	\end{itemize}
-\item Optimized implementations of the extended greatest common divisor for 32-bit, 64-bit, and 128-bit arguments.
+\item Optimized extended GCD for 32, 64, and 128-bits.
 	\begin{itemize}
 	\item 32-bit uses extended Euclidean algorithm.
 		\begin{itemize}
@@ -281,6 +281,30 @@ Operations of XGCD must be unimodular and partial quotients are terms in a simpl
 \item 1,000,000 pseudorandom positive integer triples $(a, b, T)$ with $0 \le b \le a$ and $0 \le T \le \sqrt a$.
 \end{itemize}
 \end{frame}
+
+% PARTIAL XGCD RESULTS
+\begin{frame}
+\frametitle{Partial XGCD Results}
+\framesubtitle{32-bits}
+\begin{figure}
+\includegraphics[scale=0.86]{best-partial-32}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Partial XGCD Results}
+\framesubtitle{64-bits}
+\begin{figure}
+\includegraphics[scale=0.86]{best-partial-64}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Partial XGCD Results}
+\framesubtitle{128-bits}
+\begin{figure}
+\includegraphics[scale=0.86]{best-partial-128}
+\end{figure}
+\end{frame}
+
 
 % IDEAL CLASS GROUP EXPERIMENTS
 \begin{frame}
@@ -435,7 +459,10 @@ $N = 9223375433619660527, k = 1, \Delta = -kN$
 \item $\ord(\idealclass{p_{59}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
 \end{itemize}
 
-where $\ideal{p_p} = [p, (b + \sqrt\Delta)/2]$.
+where $\ideal p_p = [p, (b + \sqrt\Delta)/2]$.
+
+\bigskip
+Each prime ideal split $N$.
 
 \end{frame}
 
@@ -450,10 +477,12 @@ $N = 18278283564428467183, k = 3, \Delta = -4kN$
 \item $\ord(\idealclass{p_{23}}) = 2 \cdot 3 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
 \item $\ord(\idealclass{p_{29}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
 \item $\ord(\idealclass{p_{31}}) = 2 \cdot 5 \cdot 59 \cdot 157 \cdot 1451$
-
 \end{itemize}
 
-where $\ideal{p_p} = [p, (b + \sqrt\Delta)/2]$.
+where $\ideal p_p = [p, (b + \sqrt\Delta)/2]$.
+
+\bigskip
+Only $\idealclass{p_{23}}$ and $\idealclass{p_{29}}$ split $N$.
 
 \end{frame}
 
@@ -487,30 +516,6 @@ For $N \le 2^{80}$, this is expected to work better than 97.7\% of the time.
 \includegraphics[scale=0.86]{binary-xgcd-optimizations-64}
 \end{figure}
 \end{frame}
-
-% PARTIAL XGCD RESULTS
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{32-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-32}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{64-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{128-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-128}
-\end{figure}
-\end{frame}
-
 
 
 

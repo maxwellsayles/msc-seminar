@@ -2,7 +2,7 @@ set terminal eps enhanced
 set key left
 
 set xlabel 'Bits in Composite'
-set ylabel 'Average Time (Milliseconds)'
+set ylabel 'Average Time (Microseconds)'
 
 set output 'spar-vanilla.eps'
 set xrange [16:40]
