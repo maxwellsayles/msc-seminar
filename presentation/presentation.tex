@@ -67,7 +67,7 @@
 
 \newcommand{\smallfont}{\fontsize{6pt}{7.2}\selectfont}
 
-\graphicspath{{eps/}{png/}}
+\graphicspath{{eps/}{png/}{l2r-best-approx/}}
 
 \title[Ideal Class Group]{Improved Arithmetic in the Ideal Class Group of Imaginary Quadratic Number Fields}
 \subtitle{With an Application to Integer Factoring}
@@ -414,6 +414,35 @@ Representations Tested:
 Compute the set of best $2^a3^b$ approximations and only keep the $L$ best leaves.
 \end{frame}
 
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- First Iteration on 777}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-777}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-9-48-87-129}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example Results}
+2,3 Representations for $E=777$:
+\begin{align*}
+2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
+2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
+2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
+2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
+\end{align*}
+
+\bigskip
+$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
+\end{frame}
+
 % EXPONENTIATION EXPERIMENTS
 \begin{frame}
 \frametitle{Exponentiation Experiments}
@@ -511,6 +540,35 @@ SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal cla
 \end{frame}
 
 
+% FUTURE WORK
+\begin{frame}
+\frametitle{Future Work}
+Some work that is currently in progress or eagerly awaiting:
+\begin{itemize}
+\item Special case for quotients $q \le 4$ in XGCD.
+\item Simplified left-to-right binary partial XGCD.
+\item Real quadratic fields and hyperelliptic curves.
+\end{itemize}
+\end{frame}
+
+% THANK YOU
+\begin{frame}
+\frametitle{Thank You}
+Summary of performance improvements:
+\begin{itemize}
+\item Arithmetic in the ideal class group of imaginary quadratic number fields for negative discriminants smaller than 118-bits.
+\item The extended GCD for inputs smaller than 128-bits.
+\item 2,3 representations for exponentiating by power primorials.
+\item Integer factoring for integers 50-bits to 62-bits of size.
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%
+% END OF DEFENCE %
+%%%%%%%%%%%%%%%%%%
+
+% FACTORIZATION OF THE ORDER
 \begin{frame}
 \frametitle{Factorization of the Order}
 \framesubtitle{Example \#1}
@@ -693,6 +751,25 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \end{tabular}
 \caption{Average time in microseconds to factor using SPAR when the number of ideals per class group is bound by the size of the integer to factor.}
 \end{table}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simple Continued Fraction Expansion of $K / L$}
+Recurrences:
+\begin{align*}
+R_i &= R_{i-2} - q_i R_{i-1} \\
+C_i &= C_{i-2} - q_i C_{i-1} \\
+A_i &= A_{i-2} + q_i A_{i-1} \\
+B_i &= B_{i-2} + q_i B_{i-1}
+\end{align*}
+
+Invariants:
+\begin{align*}
+C_i &= (-1)^{i+1} B_i \\
+L &= R_iB_{i-1} + B_iR_{i-1} \\
+(-1)^{i-1} &= A_iB_{i-1} - B_iA_{i-1} \\
+(-1)^{i+1} R_i &= LA_i - KB_i \\
+\end{align*}
 \end{frame}
 
 \end{document}
