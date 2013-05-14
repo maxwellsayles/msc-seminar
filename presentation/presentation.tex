@@ -65,6 +65,8 @@
 
 \newcommand{\ith}{i^{\textrm{th}}}
 
+\newcommand{\smallfont}{\fontsize{6pt}{7.2}\selectfont}
+
 \graphicspath{{eps/}{png/}}
 
 \title[Ideal Class Group]{Improved Arithmetic in the Ideal Class Group of Imaginary Quadratic Number Fields}
@@ -154,22 +156,7 @@ Contributions to ideal class group arithmetic:
 	\begin{itemize}
 	\item 3 to 4 times faster on average than Pari.
 	\end{itemize}
-\item Optimized extended GCD for 32, 64, and 128-bits.
-	\begin{itemize}
-	\item 32-bit uses extended Euclidean algorithm.
-		\begin{itemize}
-		\item 1.6 times faster on average than Pari and 3.4 times faster on average than GMP.
-		\end{itemize}
-	\item 64-bit left-to-right binary extended greatest common divisor.
-		\begin{itemize}
-		\item 1.3 times faster on average than Pari and 2 times faster on average than GMP.
-		\end{itemize}
-	\item 128-bit Lehmer's extended greatest common divisor.
-		\begin{itemize}
-		\item Uses the 64-bit left-to-right binary extended greatest common divisor as an inner loop.
-		\item About 1.13 times faster than both Pari and GMP on average.
-		\end{itemize}
-	\end{itemize}
+\item Optimized XGCD for 32, 64, and 128-bits.
 \end{itemize}
 \end{frame}
 
@@ -242,10 +229,14 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 \item 32-bit, 64-bit, 128-bit implementations.
 \item Extended Euclidean Algorithm.
 \item Windowed right-to-left binary XGCDs (Stein).
-\item Left-to-right binary XGCDs (Shallit and Sorenson, Brent\footnote{Not in thesis.}, and our simplified).
+\item Left-to-right binary XGCDs (Shallit and Sorenson, Brent${}^{*}$, and our simplified).
 \item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and L2R).
+\item Pari, GMP, and Flint${}^{*}$ as reference implementations.
 \item 1,000,000 pseudorandom positive integer pairs $(a,b)$ for each bit size.
 \end{itemize}
+
+\smallfont
+Items marked with ${}^{*}$ did not appear in thesis.
 \end{frame}
 
 % BRENT'S XGCD
@@ -265,10 +256,71 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 \end{algorithmic}
 \end{frame}
 
+% LEFT-TO-RIGHT BINARY XGCDs
+\begin{frame}
+\frametitle{Left-to-Right Binary XGCDs}
+\framesubtitle{32-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcds-binary-32}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Binary XGCDs}
+\framesubtitle{64-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcds-binary-64}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Binary XGCDs}
+\framesubtitle{128-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcds-binary-128}
+\end{figure}
+\end{frame}
+
 % XGCD Results
 \begin{frame}
 \frametitle{XGCD Results}
-TODO: Insert picture
+\framesubtitle{32-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcd-best-32}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{XGCD Results}
+\framesubtitle{64-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcd-best-64}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{XGCD Results}
+\framesubtitle{128-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcd-best-128}
+\end{figure}
+\end{frame}
+
+% XGCD QUANTIFIED RESULTS
+\begin{frame}
+\frametitle{XGCD Improvement}
+
+How much faster\footnote{\smallfont All times are based on the average.  The measurement of improvement is an average over the bit range.} are we than the reference implementations?
+\begin{table}
+\centering
+\begin{tabular}{ | l | l | l | l | l | }
+\hline
+Bit Range & Algorithm & GMP & Pari & Flint \\
+\hline
+1 -- 31 & EEA & 3.44 & 1.60 & 1.17 \\
+32 -- 63 & Simplified L2R Binary & 1.94 & 1.29 & 1.16 \\
+64 -- 118 & Simplified L2R Binary & 1.38 & 1.38 & -- \\
+119 -- 127 & Lehmer w/ 64-bit Simplified & 1.12 & 1.13 & -- \\
+\hline
+\end{tabular}
+\end{table}
+
 \end{frame}
 
 % Partial XGCD Experiments
@@ -306,6 +358,7 @@ Operations of XGCD must be unimodular and partial quotients are terms in a simpl
 \includegraphics[scale=0.86]{best-partial-128}
 \end{figure}
 \end{frame}
+
 
 
 % IDEAL CLASS GROUP EXPERIMENTS
@@ -525,10 +578,9 @@ For $N \le 2^{80}$, this is expected to work better than 97.7\% of the time.
 \frametitle{Binary XGCD Optimizations}
 \framesubtitle{64-bit simplified left-to-right binary XGCD}
 \begin{figure}
-\includegraphics[scale=0.86]{binary-xgcd-optimizations-64}
+\includegraphics[scale=0.86]{xgcd-binary-optimizations-64}
 \end{figure}
 \end{frame}
-
 
 
 % SQUARE ROOT APPROXIMATION
@@ -612,6 +664,15 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \includegraphics[scale=0.47]{bits-80-3d.png}
 \end{figure}
 \end{frame}
+
+\begin{frame}
+\frametitle{SuperSPAR Prime Ideals}
+\framesubtitle{Sequential vs Random}
+\begin{figure}
+\includegraphics[scale=0.86]{sspar-random-vs-sequential}
+\end{figure}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{SPAR -- Expanding the 2-Sylow Group}
