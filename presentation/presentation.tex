@@ -165,34 +165,11 @@ Contributions to integer factoring:
 \end{itemize}
 \end{frame}
 
-% CONTRIBUTIONS TO INTEGER FACTORING
-\begin{frame}
-\frametitle{Contributions Continued}
-Contributions to integer factoring:
-
-\begin{itemize}
-\item Left-to-right best approximations method for computing 2,3 representations.
-	\begin{itemize}
-	\item Tested using power primorials.
-	\item Best representations for exponentiation of the methods tested.
-	\item Exponentiation is about 1.4 times faster on average than with the binary representations.
-		\begin{itemize}
-		\item Representations are computed in advance.
-		\end{itemize}
-	\end{itemize}
-\item SuperSPAR integer factoring algorithm.
-	\begin{itemize}
-	\item Extends SPAR using bounded primorial steps search.
-	\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
-	\item On average, fastest integer factoring algorithm for integers of size 50-bits to 62-bits of the implementations tested.
-	\end{itemize}
-\end{itemize}
-\end{frame}
   
 % IDEAL CLASS GROUP ARITHMETIC
 \begin{frame}
 \frametitle{Arithmetic in the Ideal Class Group}
-Our implementation is based on NUCOMP, NUDUPL, and NUCUBE. % TODO CITE
+Based on NUCOMP, NUDUPL, and NUCUBE \\(Shanks, Atkin, van der Poorten, Jacobson, Imbert, Schmidt, possibly others). % TODO CITE
 
 \begin{itemize}
 \item Implementations for 64-bit and 128-bit arithmetic.
@@ -206,7 +183,9 @@ Our implementation is based on NUCOMP, NUDUPL, and NUCUBE. % TODO CITE
 	\end{itemize}
 \end{itemize}
 
-\end{frame}  
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % XGCD
 \begin{comment}
@@ -331,6 +310,8 @@ Bit Range & Algorithm & GMP & Pari & Flint \\
 All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Partial XGCD Experiments
 \begin{frame}
 \frametitle{Partial XGCD Experiments}
@@ -398,22 +379,88 @@ All times are based on the average.  The measurement of improvement is an averag
 
 \end{frame}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % IDEAL CLASS GROUP EXPERIMENTS
 \begin{frame}
 \frametitle{Ideal Class Group Experiments}
-TODO: Took about a day
+\begin{itemize}
+\item 64-bit and 128-bit (GMP and Pari for comparison).
+\item 10,000 groups (1000 multiplications, 1000 squares, 1000 cubes).
+\item Negative discriminants from 16-bits to 118-bits of size.
+\item About one CPU day.
+\end{itemize}
 \end{frame}
 
 % IDEAL CLASS GROUP RESULTS
 \begin{frame}
 \frametitle{Ideal Class Group Results}
-TODO: insert pretty picture
-	\begin{itemize}
-	\item 3 to 4 times faster on average than Pari.
-	\end{itemize}
+\framesubtitle{64-bit multiplication}
+\begin{figure}
+\includegraphics[scale=0.86]{compose-64}
+\end{figure}
 \end{frame}
+\begin{frame}
+\frametitle{Ideal Class Group Results}
+\framesubtitle{64-bit squaring}
+\begin{figure}
+\includegraphics[scale=0.86]{square-64}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Ideal Class Group Results}
+\framesubtitle{64-bit cubing}
+\begin{figure}
+\includegraphics[scale=0.86]{cube-64}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Ideal Class Group Results}
+\framesubtitle{128-bit multiplication}
+\begin{figure}
+\includegraphics[scale=0.86]{compose-128}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Ideal Class Group Results}
+\framesubtitle{128-bit squaring}
+\begin{figure}
+\includegraphics[scale=0.86]{square-128}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Ideal Class Group Results}
+\framesubtitle{128-bit cubing}
+\begin{figure}
+\includegraphics[scale=0.86]{cube-128}
+\end{figure}
+\end{frame}
+
+
+
+% IDEAL CLASS GROUP IMPROVEMENTS
+\begin{frame}
+\frametitle{Ideal Class Group Improvement}
+How much faster than the reference implementations?
+\begin{table}
+\centering
+\begin{tabular}{ | r | r | r | r | }
+\hline
+Operation & Bit Range & Pari & GMP \\
+\hline
+Multiplication & 1 -- 59 & 4.27 & 5.66 \\
+Squaring & 1 -- 59 & 4.27 & 4.95 \\
+Cubing & 1 -- 59 & 5.86 & 4.10 \\
+Multiplication & 59 -- 118 & 3.60 & 2.74 \\
+Squaring & 59 -- 118 & 4.02 & 2.66 \\
+Cubing & 59 -- 118 & 3.82 & 1.83 \\
+\hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % SPAR/SUPERSPAR
 \begin{frame}
@@ -519,6 +566,34 @@ TODO: Use results of ideal class group arithmetic experiments to estimate the co
 
 \end{frame}
 
+
+% EXPONENTIATION SUMMARY
+\begin{frame}
+\frametitle{Exponentiation Summary}
+Contributions to integer factoring:
+
+\begin{itemize}
+\item Left-to-right best approximations method for computing 2,3 representations.
+	\begin{itemize}
+	\item Tested using power primorials.
+	\item Best representations for exponentiation of the methods tested.
+	\item Exponentiation is about 1.4 times faster on average than with the binary representations.
+		\begin{itemize}
+		\item Representations are computed in advance.
+		\end{itemize}
+	\end{itemize}
+\item SuperSPAR integer factoring algorithm.
+	\begin{itemize}
+	\item Extends SPAR using bounded primorial steps search.
+	\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
+	\item On average, fastest integer factoring algorithm for integers of size 50-bits to 62-bits of the implementations tested.
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % SUPERSPAR
 \begin{frame}
 \frametitle{SuperSPAR}
@@ -586,6 +661,7 @@ SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal cla
 \end{figure}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % FUTURE WORK
 \begin{frame}
@@ -611,6 +687,7 @@ Summary of performance improvements:
 \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%
 % END OF DEFENCE %
