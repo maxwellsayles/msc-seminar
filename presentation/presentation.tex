@@ -6,6 +6,7 @@
 \usepackage{beamerthemesplit}
 \usepackage{comment}
 \usepackage{listings}
+\usepackage{multirow}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -69,7 +70,7 @@
 
 \graphicspath{{eps/}{png/}{l2r-best-approx/}}
 
-\title[Ideal Class Group]{Improved Arithmetic in the Ideal Class Group of Imaginary Quadratic Number Fields}
+\title[]{Improved Arithmetic in the Ideal Class Group of Imaginary Quadratic Number Fields}
 \subtitle{With an Application to Integer Factoring}
 \author{Maxwell Sayles}
 \date{May 22, 2013}
@@ -91,8 +92,8 @@
     \usebeamerfont{author in head/foot} \hspace*{2em} \insertshortauthor \hspace*{2em}
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
-    \usebeamerfont{title in head/foot} \hspace*{2em} \insertshorttitle \hspace*{2em}
-    \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
+    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
+%    \usebeamerfont{title in head/foot} \hspace*{2em} \insertshorttitle \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
   \end{beamercolorbox}}%
   \vskip0pt%
 }
@@ -152,11 +153,15 @@ Integer Factoring:
 \frametitle{Contributions}
 Contributions to ideal class group arithmetic:
 \begin{itemize} %[<+->]
-\item Optimized for 64 and 128-bit arithmetic.
-	\begin{itemize}
-	\item 3 to 4 times faster on average than Pari.
-	\end{itemize}
+\item Optimized implementations using 64 and 128-bit arithmetic.
 \item Optimized XGCD for 32, 64, and 128-bits.
+\end{itemize}
+
+\bigskip
+Contributions to integer factoring:
+\begin{itemize}
+\item Left-to-right best approximations method for computing 2,3 representations of power primorials.
+\item SuperSPAR integer factoring algorithm.
 \end{itemize}
 \end{frame}
 
@@ -306,10 +311,10 @@ Items marked with ${}^{*}$ did not appear in thesis.
 \begin{frame}
 \frametitle{XGCD Improvement}
 
-How much faster\footnote{\smallfont All times are based on the average.  The measurement of improvement is an average over the bit range.} are we than the reference implementations?
+How much faster than the reference implementations?
 \begin{table}
 \centering
-\begin{tabular}{ | l | l | l | l | l | }
+\begin{tabular}{ | r | l | r | r | r | }
 \hline
 Bit Range & Algorithm & GMP & Pari & Flint \\
 \hline
@@ -321,12 +326,16 @@ Bit Range & Algorithm & GMP & Pari & Flint \\
 \end{tabular}
 \end{table}
 
+\bigskip
+\smallfont
+All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
 
 % Partial XGCD Experiments
 \begin{frame}
 \frametitle{Partial XGCD Experiments}
-Operations of XGCD must be unimodular and partial quotients are terms in a simple continued fraction expansion\footnote{Results are not in thesis}.
+Operations of XGCD must be unimodular.
+%Operations of XGCD must be unimodular and partial quotients are terms in a simple continued fraction expansion\footnote{Results are not in thesis.}.
 \begin{itemize}
 \item 32-bit, 64-bit, 128-bit implementations.
 \item Extended Euclidean Algorithm.
@@ -334,6 +343,10 @@ Operations of XGCD must be unimodular and partial quotients are terms in a simpl
 \item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and L2R).
 \item 1,000,000 pseudorandom positive integer triples $(a, b, T)$ with $0 \le b \le a$ and $0 \le T \le \sqrt a$.
 \end{itemize}
+
+\bigskip
+\smallfont
+Results are not in thesis.
 \end{frame}
 
 % PARTIAL XGCD RESULTS
@@ -359,6 +372,32 @@ Operations of XGCD must be unimodular and partial quotients are terms in a simpl
 \end{figure}
 \end{frame}
 
+% PXGCD QUANTIFIED RESULTS
+\begin{frame}
+\frametitle{Partial XGCD Improvement}
+How much faster than the reference implementation?
+\begin{table}
+\centering
+\begin{tabular}{ | r | l | r | }
+\hline
+\multirow{2}{*}{Bit Range} & \multirow{2}{*}{Algorithm} & GMP Lehmer \\
+& & w/ 64-bit EEA \\
+\hline
+1 -- 18 & Brent & 10.62 \\
+19 -- 31 & EEA & 5.95 \\
+32 -- 63 & Brent & 4.03 \\
+64 -- 88 & Brent & 2.75 \\
+89 -- 127 & Lehmer w/ 64-bit Brent & 2.15 \\
+\hline
+\end{tabular}
+\end{table}
+
+\bigskip
+\smallfont
+All times are based on the average.  The measurement of improvement is an average over the bit range.
+
+\end{frame}
+
 
 
 % IDEAL CLASS GROUP EXPERIMENTS
@@ -371,6 +410,9 @@ TODO: Took about a day
 \begin{frame}
 \frametitle{Ideal Class Group Results}
 TODO: insert pretty picture
+	\begin{itemize}
+	\item 3 to 4 times faster on average than Pari.
+	\end{itemize}
 \end{frame}
 
 % SPAR/SUPERSPAR
@@ -411,7 +453,12 @@ Representations Tested:
 % L2R BEST APPROXIMATIONS
 \begin{frame}
 \frametitle{Left-to-Right Best Approximations}
-Compute the set of best $2^a3^b$ approximations and only keep the $L$ best leaves.
+Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
+\begin{itemize}
+\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
+\item Keep the best $2^a 3^b$ approximations for each $x$.
+\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -457,7 +504,7 @@ TODO: Use results of ideal class group arithmetic experiments to estimate the co
 \frametitle{Exponentiation Results (64-bit Implementation)}
 
 \begin{figure}
-\includegraphics[scale=0.86]{winners-64}
+\includegraphics[scale=0.86]{pow-winners-64}
 \end{figure}
 
 \end{frame}
@@ -467,7 +514,7 @@ TODO: Use results of ideal class group arithmetic experiments to estimate the co
 \frametitle{Exponentiation Results (128-bit Implementation)}
 
 \begin{figure}
-\includegraphics[scale=0.86]{winners-128}
+\includegraphics[scale=0.86]{pow-winners-128}
 \end{figure}
 
 \end{frame}
@@ -548,6 +595,7 @@ Some work that is currently in progress or eagerly awaiting:
 \item Special case for quotients $q \le 4$ in XGCD.
 \item Simplified left-to-right binary partial XGCD.
 \item Real quadratic fields and hyperelliptic curves.
+\item Improvements to left-to-right best approximations algorithm.
 \end{itemize}
 \end{frame}
 
