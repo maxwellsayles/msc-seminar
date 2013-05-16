@@ -457,6 +457,10 @@ Cubing & 59 -- 118 & 3.82 & 1.83 \\
 \hline
 \end{tabular}
 \end{table}
+
+\bigskip
+\smallfont
+All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
 
 
@@ -465,7 +469,7 @@ Cubing & 59 -- 118 & 3.82 & 1.83 \\
 % SPAR/SUPERSPAR
 \begin{frame}
 \frametitle{SPAR/SuperSPAR}
-Two stages:
+SPAR/SuperSPAR operate in two stages:
 \begin{itemize}
 \item Exponentiate a random ideal class.
 \item Search for the order of the resulting ideal class.
@@ -489,12 +493,15 @@ where $p_i$ is the $\ith$ prime.
 % EXPONENTIATION METHODS
 \begin{frame}
 \frametitle{Representations Tested}
-Representations Tested:
+Representations tested:
 \begin{itemize}
-\item Binary, Non-Adjacent Form.
+\item Binary, Non-Adjacent Form (for reference)
 \item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
-\item Left-to-Right (Berth{\'e} and Imbert)
+\item Left-to-Right (Berth{\'e} and Imbert).
+\item Pruned Trees (Doche and Habsieger).
+\item Left-to-Right Best Approximations (combines Left-to-Right and Pruned Trees)
 \end{itemize}
+Use average time of ideal class arithmetic to estimate the time to exponentiate a 2,3 representation using Yao's algorithm for double-base exponentiation.
 \end{frame}
 
 % L2R BEST APPROXIMATIONS
@@ -546,49 +553,48 @@ TODO: Use results of ideal class group arithmetic experiments to estimate the co
 \end{itemize}
 \end{frame}
 
-% EXPONENTIATION RESULTS (64)
+% EXPONENTIATION RESULTS
 \begin{frame}
 \frametitle{Exponentiation Results (64-bit Implementation)}
-
 \begin{figure}
 \includegraphics[scale=0.86]{pow-winners-64}
 \end{figure}
-
 \end{frame}
-
-% EXPONENTIATION RESULTS (128)
 \begin{frame}
 \frametitle{Exponentiation Results (128-bit Implementation)}
-
 \begin{figure}
 \includegraphics[scale=0.86]{pow-winners-128}
 \end{figure}
-
 \end{frame}
 
-
-% EXPONENTIATION SUMMARY
+% EXPONENTIATION IMPROVEMENTS
 \begin{frame}
-\frametitle{Exponentiation Summary}
-Contributions to integer factoring:
+\frametitle{Exponentiation Improvement}
+How much faster than the reference implementations?
+\begin{table}
+\centering
+\begin{tabular}{ | l | l | l | l | l | }
+\hline
+& \multirow{2}{*}{Binary} & \multirow{2}{*}{NAF} & Pruned & Left-to-Right \\
+& & & Trees & Representations \\
+\hline
+Left-to-Right Best & \multirow{3}{*}{1.40} & \multirow{3}{*}{1.25} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.13}} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.009}} \\
+Approximations & & & &\\
+(64-bit) & & & &\\
 
-\begin{itemize}
-\item Left-to-right best approximations method for computing 2,3 representations.
-	\begin{itemize}
-	\item Tested using power primorials.
-	\item Best representations for exponentiation of the methods tested.
-	\item Exponentiation is about 1.4 times faster on average than with the binary representations.
-		\begin{itemize}
-		\item Representations are computed in advance.
-		\end{itemize}
-	\end{itemize}
-\item SuperSPAR integer factoring algorithm.
-	\begin{itemize}
-	\item Extends SPAR using bounded primorial steps search.
-	\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
-	\item On average, fastest integer factoring algorithm for integers of size 50-bits to 62-bits of the implementations tested.
-	\end{itemize}
-\end{itemize}
+\hline
+
+Left-to-Right Best & \multirow{3}{*}{1.42} & \multirow{3}{*}{1.25} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.18}} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.010}} \\
+Approximations & & & &\\
+(128-bit) & & & &\\
+
+\hline
+\end{tabular}
+\end{table}
+
+\bigskip
+\smallfont
+All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
 
 
@@ -597,12 +603,12 @@ Contributions to integer factoring:
 % SUPERSPAR
 \begin{frame}
 \frametitle{SuperSPAR}
-
 SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal class group of imaginary quadratic integers.
 \begin{itemize}
-\item Extension of SPAR 
+\item Extends SPAR using bounded primorial steps search.
+\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
+\item On average, fastest integer factoring algorithm for integers of size 50-bits to 62-bits of the implementations tested.
 \end{itemize}
-
 \end{frame}
 
 % EVOLUTION OF SUPERSPAR
