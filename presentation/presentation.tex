@@ -214,7 +214,7 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 \item Extended Euclidean Algorithm.
 \item Windowed right-to-left binary XGCDs (Stein).
 \item Left-to-right binary XGCDs (Shallit and Sorenson, Brent${}^{*}$, and our simplified).
-\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and L2R).
+\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and our L2R binary).
 \item Pari, GMP, and Flint${}^{*}$ as reference implementations.
 \item 1,000,000 pseudorandom positive integer pairs $(a,b)$ for each bit size.
 \end{itemize}
@@ -298,9 +298,9 @@ How much faster than the reference implementations?
 Bit Range & Algorithm & GMP & Pari & Flint \\
 \hline
 1 -- 31 & EEA & 3.44 & 1.60 & 1.17 \\
-32 -- 63 & Simplified L2R Binary & 1.94 & 1.29 & 1.16 \\
-64 -- 118 & Simplified L2R Binary & 1.38 & 1.38 & -- \\
-119 -- 127 & Lehmer w/ 64-bit Simplified & 1.12 & 1.13 & -- \\
+32 -- 63 & Our L2R Binary & 1.94 & 1.29 & 1.16 \\
+64 -- 118 & Our L2R Binary & 1.38 & 1.38 & -- \\
+119 -- 127 & Lehmer w/ Our 64-bit L2R & 1.12 & 1.13 & -- \\
 \hline
 \end{tabular}
 \end{table}
@@ -315,13 +315,12 @@ All times are based on the average.  The measurement of improvement is an averag
 % Partial XGCD Experiments
 \begin{frame}
 \frametitle{Partial XGCD Experiments}
-Operations of XGCD must be unimodular.
-%Operations of XGCD must be unimodular and partial quotients are terms in a simple continued fraction expansion\footnote{Results are not in thesis.}.
+Operations of partial XGCD must be unimodular.
 \begin{itemize}
 \item 32-bit, 64-bit, 128-bit implementations.
 \item Extended Euclidean Algorithm.
-\item Left-to-right binary XGCD (Brent).
-\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and L2R).
+\item Left-to-right binary XGCD (Brent and Ours).
+\item Lehmer's XGCD (64-bit EEA, Brent, and our L2R binary).
 \item 1,000,000 pseudorandom positive integer triples $(a, b, T)$ with $0 \le b \le a$ and $0 \le T \le \sqrt a$.
 \end{itemize}
 
@@ -336,6 +335,13 @@ Results are not in thesis.
 \framesubtitle{32-bits}
 \begin{figure}
 \includegraphics[scale=0.86]{best-partial-32}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Partial XGCD Results}
+\framesubtitle{32-bits}
+\begin{figure}
+\includegraphics[scale=0.86]{best-partial-32-2}
 \end{figure}
 \end{frame}
 \begin{frame}
@@ -364,11 +370,11 @@ How much faster than the reference implementation?
 \multirow{2}{*}{Bit Range} & \multirow{2}{*}{Algorithm} & GMP Lehmer \\
 & & w/ 64-bit EEA \\
 \hline
-1 -- 18 & Brent & 10.62 \\
-19 -- 31 & EEA & 5.95 \\
-32 -- 63 & Brent & 4.03 \\
-64 -- 88 & Brent & 2.75 \\
-89 -- 127 & Lehmer w/ 64-bit Brent & 2.15 \\
+1 -- 15 & Brent & 11.12 \\
+16 -- 31 & Our L2R Binary & 6.14 \\
+32 -- 63 & Our L2R Binary & 4.37 \\
+64 -- 103 & Our L2R Binary & 3.18 \\
+104 -- 127 & Lehmer w/ Our 64-bit L2R & 2.31 \\
 \hline
 \end{tabular}
 \end{table}
@@ -386,7 +392,7 @@ All times are based on the average.  The measurement of improvement is an averag
 \frametitle{Ideal Class Group Experiments}
 \begin{itemize}
 \item 64-bit and 128-bit (GMP and Pari for comparison).
-\item 10,000 groups (1000 multiplications, 1000 squares, 1000 cubes).
+\item 10,000 groups (1000 multiplications, 1000 squares, and \break 1000 cubes).
 \item Negative discriminants from 16-bits to 118-bits of size.
 \item About one CPU day.
 \end{itemize}
@@ -501,55 +507,19 @@ Representations tested:
 \item Pruned Trees (Doche and Habsieger).
 \item Left-to-Right Best Approximations (combines Left-to-Right and Pruned Trees)
 \end{itemize}
-Use average time of ideal class arithmetic to estimate the time to exponentiate a 2,3 representation using Yao's algorithm for double-base exponentiation.
 \end{frame}
 
-% L2R BEST APPROXIMATIONS
 \begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
+\frametitle{Method}
+How did we test?
 \begin{itemize}
-\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
-\item Keep the best $2^a 3^b$ approximations for each $x$.
-\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- First Iteration on 777}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-777}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-9-48-87-129}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example Results}
-2,3 Representations for $E=777$:
-\begin{align*}
-2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
-2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
-2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
-2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
-\end{align*}
-
-\bigskip
-$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
-\end{frame}
-
-% EXPONENTIATION EXPERIMENTS
-\begin{frame}
-\frametitle{Exponentiation Experiments}
-TODO: Use results of ideal class group arithmetic experiments to estimate the cost of each
-\begin{itemize}
-\item Faster.  Each time we change XGCD, we re-time arithmetic, not necessary to retime exponentiation.
+\item Compute 2,3 representations in advance for each technique.
+\item Use average time of operations in the class group.
+\item Simulate using Yao's algorithm for double-base exponentiation.
+\item Future work: Actually time each technique for many ideals and many groups.
+	\begin{itemize}
+	\item Estimate 14 CPU years for 10,000 groups and 1000 elements per group.
+	\end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -596,6 +566,48 @@ Approximations & & & &\\
 \smallfont
 All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
+
+
+% L2R BEST APPROXIMATIONS
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
+\begin{itemize}
+\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
+\item Keep the best $2^a 3^b$ approximations for each $x$.
+\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- First Iteration on 777}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-777}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-9-48-87-129}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example Results}
+2,3 Representations for $E=777$:
+\begin{align*}
+2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
+2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
+2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
+2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
+\end{align*}
+
+\bigskip
+$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
+\end{frame}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
