@@ -120,7 +120,7 @@
 \frametitle{Major Goals}
 \begin{itemize}
 \item Improve the performance of arithmetic in the ideal class group.
-\item An implementation of the SuperSPAR integer factoring algorithm.
+\item SuperSPAR integer factoring algorithm.
 \end{itemize}
 \end{frame}
 
@@ -381,12 +381,11 @@ SuperSPAR improves upon each stage.
 
 % EXPONENTIATION METHOD
 \begin{frame}
-\frametitle{How did we test exponentiation?}
-TODO: Think about this.
+\frametitle{Power Primorial Exponentiation Experiments}
 \begin{itemize}
+\item Use average time of class group operations.
 \item Compute 2,3 representations in advance for each technique.
-\item Use average time for largest discriminant size \\ (59-bits and 118-bits).
-\item Simulate using Yao's algorithm for double-base exponentiation.
+\item Compute the time to exponentiate given a representation and the average cost of group operations.
 \end{itemize}
 \end{frame}
 
@@ -438,7 +437,7 @@ All times are based on the average.  The measurement of improvement is an averag
 
 % EVOLUTION OF SUPERSPAR
 \begin{frame}
-\frametitle{Vanilla SPAR}
+\frametitle{SPAR}
 \begin{figure}
 \includegraphics[scale=0.86]{spar-vanilla}
 \end{figure}
@@ -447,12 +446,6 @@ All times are based on the average.  The measurement of improvement is an averag
 \frametitle{Bound the Number of Ideals per Group}
 \begin{figure}
 \includegraphics[scale=0.86]{spar-bound-attempts}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Bound the Number of Ideals per Group}
-\begin{figure}
-\includegraphics[scale=0.86]{spar-bound-attempts2}
 \end{figure}
 \end{frame}
 \begin{frame}
@@ -541,6 +534,13 @@ Summary of performance improvements:
 %%%%%%%%%%%%%%%%%%
 % END OF DEFENCE %
 %%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\end{frame}
+\begin{frame}
+\end{frame}
+\begin{frame}
+\end{frame}
 
 % SOME USES
 \begin{frame}

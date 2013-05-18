@@ -11,23 +11,17 @@ plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR'
 
 set output 'spar-bound-attempts.eps'
 plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR', \
-     'spar-attempts-8-timings.dat' using 1:7 with lines t '8 Ideals per Group'
-
-set output 'spar-bound-attempts2.eps'
-plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR', \
-     'spar-attempts-8-timings.dat' using 1:7 with lines t '8 Ideals per Group', \
-     'spar-dyn-attempts-timings.dat' using 1:7 with lines t 'Variable Ideals per Group'
+     'spar-dyn-attempts-timings.dat' using 1:7 with lines t 'Limit Ideals per Group'
      
 set output 'spar-to-sspar.eps'
 plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR', \
-     'spar-attempts-8-timings.dat' using 1:7 with lines t '8 Ideals per Group', \
-     'spar-dyn-attempts-timings.dat' using 1:7 with lines t 'Variable Ideals per Group' lc 3, \
-     'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial Steps' lc 4
+     'spar-dyn-attempts-timings.dat' using 1:7 with lines t 'Limit Ideals per Group' lc 2, \
+     'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial Steps' lc 3
 
 set xrange [16:60]
 set yrange [0:2500]
 set output 'sspar-theoretical.eps'
-plot 'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial Steps' lc 4
+plot 'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial Steps' lc 3
 
 set output 'sspar-power-bound.eps'
 plot 'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial Steps' lc 4, \
