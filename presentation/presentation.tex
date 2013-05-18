@@ -213,8 +213,8 @@ All times are based on the average.  The measurement of improvement is an averag
 \begin{frame}
 \frametitle{Partial XGCD Experiments}
 \begin{itemize}
-\item 32-bit, 64-bit, 128-bit implementations.
 \item Operations must be unimodular.
+\item 32-bit, 64-bit, 128-bit implementations.
 %\item Extended Euclidean Algorithm.
 %\item Left-to-right binary XGCD (Brent and Ours).
 %\item Lehmer's XGCD (64-bit EEA, Brent, and our L2R binary).
@@ -523,7 +523,7 @@ Some work that is currently in progress or eagerly awaiting:
 Summary of performance improvements:
 \begin{itemize}
 \item Arithmetic in the ideal class group for discriminants smaller than 118-bits.
-\item The extended GCD for inputs smaller than 128-bits).
+\item The extended GCD for inputs smaller than 128-bits.
 \item Integer factoring for integers 49-bits to 68-bits of size (median case).
 \item 2,3 representations for exponentiating by power primorials.
 \end{itemize}
@@ -585,16 +585,26 @@ Contributions to integer factoring:
 \frametitle{Extended Greatest Common Divisor (XGCD)}
 Extended greatest common divisor solves
 \[
-	s = Ua + Vb = \gcd(a, b).
+	s = Ua + Vb = \gcd(a, b)
 \]
-Partial extended greatest common divisor solves
-TODO: This is madness
-\begin{eqnarray*}
-	s &= (-1)^z Ua + (-1)^{z+1} Vb \\
-	t &= (-1)^z Xa + (-1)^{z+1} Yb
-\end{eqnarray*}
-for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUCUBE.
+for the largest $s$ dividing both $a$ and $b$.
 \end{frame}
+
+% EEA
+\begin{frame}
+\frametitle{Extended Euclidean Algorithm}
+\begin{algorithmic}[1]
+\Procedure{EEA}{$a, b}$ \Comment{$a, b \in \ZZgez$}
+\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
+\While {$t > 0$}
+	\State $q \gets \floor{s/t}$
+	\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixtt{0}{1}{1}{-q} \cdot \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
+\EndWhile
+\State \Return $(s, U, V)$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+
 
 % OUR XGCD
 \begin{frame}
@@ -613,6 +623,14 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 \end{algorithmic}
 \end{frame}
 
+% BINARY XGCD OPTIMIZATION
+\begin{frame}
+\frametitle{Binary XGCD Optimizations}
+\framesubtitle{64-bit simplified left-to-right binary XGCD}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcd-binary-optimizations-64}
+\end{figure}
+\end{frame}
 
 % LEFT-TO-RIGHT BINARY XGCDs
 \begin{frame}
@@ -637,14 +655,7 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 \end{figure}
 \end{frame}
 
-% BINARY XGCD OPTIMIZATION
-\begin{frame}
-\frametitle{Binary XGCD Optimizations}
-\framesubtitle{64-bit simplified left-to-right binary XGCD}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcd-binary-optimizations-64}
-\end{figure}
-\end{frame}
+
 
 
 % SQUARE ROOT APPROXIMATION
@@ -708,6 +719,28 @@ for some ideal class $\aclass$ and exponent
 where $p_i$ is the $\ith$ prime.
 \end{frame}
 
+
+% EXPONENTIATION TECHNIQUES
+\begin{frame}
+\frametitle{Representations Tested}
+Representations tested:
+\begin{itemize}
+\item Binary, Non-Adjacent Form (for reference)
+\item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
+\item Left-to-Right (Berth{\'e} and Imbert).
+\item Pruned Trees (Doche and Habsieger).
+\item Our Left-to-Right Best Approximations \break (combines Left-to-Right and Pruned Trees)
+\end{itemize}
+\end{frame}
+
+% HOW TO EXPONENTIATE
+\begin{frame}
+\begin{figure}
+\includegraphics[scale=0.46]{yao1}
+\end{figure}
+\end{frame}
+
+
 % L2R BEST APPROXIMATIONS
 \begin{frame}
 \frametitle{Left-to-Right Best Approximations}
@@ -748,19 +781,6 @@ Left-to-Right best approximations is a technique combining the greedy approach o
 $2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
 \end{frame}
 
-% EXPONENTIATION TECHNIQUES
-\begin{frame}
-\frametitle{Representations Tested}
-Representations tested:
-\begin{itemize}
-\item Binary, Non-Adjacent Form (for reference)
-\item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
-\item Left-to-Right (Berth{\'e} and Imbert).
-\item Pruned Trees (Doche and Habsieger).
-\item Our Left-to-Right Best Approximations \break (combines Left-to-Right and Pruned Trees)
-\end{itemize}
-\end{frame}
-
 
 % SUPERSPAR
 \begin{frame}
@@ -775,6 +795,50 @@ SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal cla
 \bigbreak
 \smallfont
 Median times do not appear in thesis.
+\end{frame}
+
+% THEORETICALLY OPTIMAL PARAMETERS
+\begin{frame}
+\frametitle{Theoretically Optimal Parameters for Exponentiation Stage}
+\begin{table}
+\centering
+\begin{tabular}{| r | r | r | r | r |}
+\hline
+$\log_2 N$ & $r = \sqrt{\ln N / \ln \ln N}$ & $\floor{N^{1/2r}}$ & $p_t$ & $t$ \\
+\hline
+16 & 2.14693 & 13 & 13 & 6 \\
+32 & 2.67523 & 63 & 61 & 18 \\
+48 & 3.08112 & 221 & 211 & 47 \\
+64 & 3.42016 & 655 & 653 & 119 \\
+80 & 3.71609 & 1738 & 1733 & 270 \\
+96 & 3.98139 & 4258 & 4253 & 583 \\
+112 & 4.22355 & 9802 & 9791 & 1208 \\
+128 & 4.44745 & 21473 & 21467 & 2407 \\
+\hline
+\end{tabular}
+\end{table}
+\end{frame}
+
+% THEORETICALLY OPTIMAL SEARCH BOUNDS
+\begin{frame}
+\frametitle{Theoretically Optimal Search Bounds}
+\begin{table}
+\centering
+\begin{tabular}{| r | r | r | r | r | r |}
+\hline
+$\log_2 N$ & $\floor{N^{1/2r}}$ & $2m\phi(P_w)$ & $m^2\phi(P_w)P_w$ & $m$ & $w$ \\
+\hline
+16 & 13 & 16 & 480 & 1 & 3 \\
+32 & 63 & 64 & 7680 & 4 & 3 \\
+48 & 221 & 224 & 94080 & 14 & 3 \\
+64 & 655 & 656 & 806880 & 41 & 3 \\
+80 & 1738 & 1824 & 7277760 & 19 & 4 \\
+96 & 4258 & 4320 & 40824000 & 45 & 4 \\
+112 & 9802 & 10080 & 222264000 & 105 & 4 \\
+128 & 21473 & 22080 & 1173110400 & 23 & 5 \\
+\hline
+\end{tabular}
+\end{table}
 \end{frame}
 
 
