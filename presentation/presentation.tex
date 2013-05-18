@@ -155,13 +155,16 @@ Contributions to ideal class group arithmetic:
 \begin{itemize} %[<+->]
 \item Optimized implementations using 64 and 128-bit arithmetic.
 \item Optimized XGCD for 32, 64, and 128-bits.
+	\begin{itemize}
+	\item A simplified left-to-right binary XGCD (and partial XGCD).
+	\end{itemize}
 \end{itemize}
 
 \bigskip
 Contributions to integer factoring:
 \begin{itemize}
-\item Left-to-right best approximations method for computing 2,3 representations of power primorials.
 \item SuperSPAR integer factoring algorithm.
+\item Left-to-right best approximations method for computing 2,3 representations of power primorials.
 \end{itemize}
 \end{frame}
 
@@ -169,7 +172,7 @@ Contributions to integer factoring:
 % IDEAL CLASS GROUP ARITHMETIC
 \begin{frame}
 \frametitle{Arithmetic in the Ideal Class Group}
-Based on NUCOMP, NUDUPL, and NUCUBE \\(Shanks, Atkin, van der Poorten, Jacobson, Imbert, Schmidt, possibly others). % TODO CITE
+Based on NUCOMP, NUDUPL, and NUCUBE \\(Shanks, Jacobson, Williams, Imbert, Schmidt).
 
 \begin{itemize}
 \item Implementations for 64-bit and 128-bit arithmetic.
@@ -223,44 +226,21 @@ for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUC
 Items marked with ${}^{*}$ did not appear in thesis.
 \end{frame}
 
-% BRENT'S XGCD
+% OUR XGCD
 \begin{frame}
-\frametitle{Brent's Left-to-Right Binary XGCD}
+\frametitle{Our Left-to-Right Binary XGCD}
 \begin{algorithmic}[1]
-\Procedure{BrentXGCD}{$a, b}$ \Comment{$a, b \in \ZZgez$}
+\Procedure{Our\_L2R\_XGCD}{$a, b}$ \Comment{$a, b \in \ZZgez$}
 \State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
 \While {$t > 0$}
-	\State find the largest $k$ such that $2^k t \le s$
-	\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixtt{1}{-2^k}{0}{1} \cdot
-		    \matrixThreeTwo{s}{U}{V}{t}{X}{Y}$
+	\State $k \gets $ \Call{NumBits}{$s$} - \Call{NumBits}{$t$}
+	\State subtract $2^k$ times the second row from the first
+	\If {$s < 0$} negate the first row \EndIf
 	\If {$s < t$} swap the rows of the matrix \EndIf
 \EndWhile
 \State \Return $(s, U, V)$
 \EndProcedure
 \end{algorithmic}
-\end{frame}
-
-% LEFT-TO-RIGHT BINARY XGCDs
-\begin{frame}
-\frametitle{Left-to-Right Binary XGCDs}
-\framesubtitle{32-bit}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcds-binary-32}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Binary XGCDs}
-\framesubtitle{64-bit}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcds-binary-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Binary XGCDs}
-\framesubtitle{128-bit}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcds-binary-128}
-\end{figure}
 \end{frame}
 
 % XGCD Results
@@ -496,7 +476,26 @@ for some ideal class $\aclass$ and exponent
 where $p_i$ is the $\ith$ prime.
 \end{frame}
 
-% EXPONENTIATION METHODS
+% EXPONENTIATION METHOD
+\begin{frame}
+\frametitle{Method}
+How to test?
+\begin{itemize}
+\item Many discriminant sizes.
+\item Need a good representation of groups and elements.
+\end{itemize}
+
+\bigbreak
+How did we test?
+\begin{itemize}
+\item Compute 2,3 representations in advance for each technique.
+\item Use average time for largest discriminant size \\ (59-bits and 118-bits).
+\item Simulate using Yao's algorithm for double-base exponentiation.
+\end{itemize}
+\end{frame}
+
+
+% EXPONENTIATION TECHNIQUES
 \begin{frame}
 \frametitle{Representations Tested}
 Representations tested:
@@ -505,23 +504,52 @@ Representations tested:
 \item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
 \item Left-to-Right (Berth{\'e} and Imbert).
 \item Pruned Trees (Doche and Habsieger).
-\item Left-to-Right Best Approximations (combines Left-to-Right and Pruned Trees)
+\item Our Left-to-Right Best Approximations \break (combines Left-to-Right and Pruned Trees)
+\end{itemize}
+\end{frame}
+
+% L2R BEST APPROXIMATIONS
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
+\begin{itemize}
+\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
+\item Keep the best $2^a 3^b$ approximations for each $x$.
+\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Method}
-How did we test?
-\begin{itemize}
-\item Compute 2,3 representations in advance for each technique.
-\item Use average time of operations in the class group.
-\item Simulate using Yao's algorithm for double-base exponentiation.
-\item Future work: Actually time each technique for many ideals and many groups.
-	\begin{itemize}
-	\item Estimate 14 CPU years for 10,000 groups and 1000 elements per group.
-	\end{itemize}
-\end{itemize}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- First Iteration on 777}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-777}
+\end{figure}
 \end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-9-48-87-129}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example Results}
+2,3 Representations for $E=777$:
+\begin{align*}
+2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
+2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
+2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
+2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
+\end{align*}
+
+\bigskip
+$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
+\end{frame}
+
+
+
 
 % EXPONENTIATION RESULTS
 \begin{frame}
@@ -568,47 +596,6 @@ All times are based on the average.  The measurement of improvement is an averag
 \end{frame}
 
 
-% L2R BEST APPROXIMATIONS
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
-\begin{itemize}
-\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
-\item Keep the best $2^a 3^b$ approximations for each $x$.
-\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- First Iteration on 777}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-777}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-9-48-87-129}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example Results}
-2,3 Representations for $E=777$:
-\begin{align*}
-2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
-2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
-2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
-2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
-\end{align*}
-
-\bigskip
-$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
-\end{frame}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -617,10 +604,14 @@ $2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper
 \frametitle{SuperSPAR}
 SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal class group of imaginary quadratic integers.
 \begin{itemize}
-\item Extends SPAR using bounded primorial steps search.
+\item Extends SPAR using a bounded primorial steps search.
 \item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
-\item On average, fastest integer factoring algorithm for integers of size 50-bits to 62-bits of the implementations tested.
+\item Fastest median time for integers 49-bits to 68-bits of size.
+\item Fastest average time for integers 49-bits to 64-bits of size.
 \end{itemize}
+\bigbreak
+\smallfont
+Median times do not appear in thesis.
 \end{frame}
 
 % EVOLUTION OF SUPERSPAR
@@ -679,6 +670,25 @@ SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal cla
 \end{figure}
 \end{frame}
 
+
+% MEDIAN TIMES
+\begin{frame}
+\frametitle{Median Integer Factoring Times}
+\includegraphics[scale=0.86]{factor-median}
+\end{frame}
+\begin{frame}
+\frametitle{Median Integer Factoring Times (Zoomed Left)}
+\includegraphics[scale=0.86]{factor-median-zoom-left}
+\end{frame}
+\begin{frame}
+\frametitle{Median Integer Factoring Times (Zoomed Right)}
+\includegraphics[scale=0.86]{factor-median-zoom-right}
+\end{frame}
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % FUTURE WORK
@@ -701,7 +711,8 @@ Summary of performance improvements:
 \item Arithmetic in the ideal class group of imaginary quadratic number fields for negative discriminants smaller than 118-bits.
 \item The extended GCD for inputs smaller than 128-bits.
 \item 2,3 representations for exponentiating by power primorials.
-\item Integer factoring for integers 50-bits to 62-bits of size.
+\item Integer factoring for integers 49-bits to 64-bits of size (Average case TODO).
+\item Integer factoring for integers 49-bits to 68-bits of size (Median case).
 \end{itemize}
 \end{frame}
 
@@ -711,68 +722,29 @@ Summary of performance improvements:
 % END OF DEFENCE %
 %%%%%%%%%%%%%%%%%%
 
-% FACTORIZATION OF THE ORDER
+
+% LEFT-TO-RIGHT BINARY XGCDs
 \begin{frame}
-\frametitle{Factorization of the Order}
-\framesubtitle{Example \#1}
-
-$N = 9223375433619660527, k = 1, \Delta = -kN$
-\begin{itemize}
-\item $\ord(\idealclass{p_{19}}) = 2^2 \cdot 13 \cdot 2770667$
-\item $\ord(\idealclass{p_{37}}) = 2^3 \cdot 3 \cdot 13 \cdot 2770667$
-\item $\ord(\idealclass{p_{43}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
-\item $\ord(\idealclass{p_{47}}) = 2^3 \cdot 3 \cdot 13 \cdot 2770667$
-\item $\ord(\idealclass{p_{59}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
-\end{itemize}
-
-where $\ideal p_p = [p, (b + \sqrt\Delta)/2]$.
-
-\bigskip
-Each prime ideal split $N$.
-
+\frametitle{Left-to-Right Binary XGCDs}
+\framesubtitle{32-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcds-binary-32}
+\end{figure}
 \end{frame}
-
 \begin{frame}
-\frametitle{Factorization of the Order}
-\framesubtitle{Example \#2}
-
-$N = 18278283564428467183, k = 3, \Delta = -4kN$
-\begin{itemize}
-\item $\ord(\idealclass{p_{11}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
-\item $\ord(\idealclass{p_{17}}) = 2 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
-\item $\ord(\idealclass{p_{23}}) = 2 \cdot 3 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
-\item $\ord(\idealclass{p_{29}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
-\item $\ord(\idealclass{p_{31}}) = 2 \cdot 5 \cdot 59 \cdot 157 \cdot 1451$
-\end{itemize}
-
-where $\ideal p_p = [p, (b + \sqrt\Delta)/2]$.
-
-\bigskip
-Only $\idealclass{p_{23}}$ and $\idealclass{p_{29}}$ split $N$.
-
+\frametitle{Left-to-Right Binary XGCDs}
+\framesubtitle{64-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcds-binary-64}
+\end{figure}
 \end{frame}
-
 \begin{frame}
-\frametitle{Prime Power Bound}
-To 
-
+\frametitle{Left-to-Right Binary XGCDs}
+\framesubtitle{128-bit}
+\begin{figure}
+\includegraphics[scale=0.86]{xgcds-binary-128}
+\end{figure}
 \end{frame}
-
-\begin{frame}
-\frametitle{Reusing the Order}
-
-Once the order of an ideal class is known, we skip the search phase.
-
-\begin{itemize}
-\item The exponentiation stage removed all small primes $\Rightarrow$ search stage not necessary.
-
-\item The exponentiation stage did not remove all small primes $\Rightarrow$ stepping coprime will never find the order.
-\end{itemize}
-
-For $N \le 2^{80}$, this is expected to work better than 97.7\% of the time.
-
-\end{frame}
-
 
 % BINARY XGCD OPTIMIZATION
 \begin{frame}
@@ -830,6 +802,59 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \end{figure}
 \end{frame}
 
+% FACTORIZATION OF THE ORDER, E.G. 1
+\begin{frame}
+\frametitle{Factorization of the Order}
+\framesubtitle{Example \#1}
+
+$N = 9223375433619660527, k = 1, \Delta = -kN$
+\begin{itemize}
+\item $\ord(\idealclass{p_{19}}) = 2^2 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{37}}) = 2^3 \cdot 3 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{43}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{47}}) = 2^3 \cdot 3 \cdot 13 \cdot 2770667$
+\item $\ord(\idealclass{p_{59}}) = 2^4 \cdot 3 \cdot 13 \cdot 2770667$
+\end{itemize}
+
+where $\ideal p_p = [p, (b + \sqrt\Delta)/2]$.
+
+\bigskip
+Each prime ideal split $N$.
+\end{frame}
+
+% FACTORIZATION OF THE ORDER, E.G. 2
+\begin{frame}
+\frametitle{Factorization of the Order}
+\framesubtitle{Example \#2}
+
+$N = 18278283564428467183, k = 3, \Delta = -4kN$
+\begin{itemize}
+\item $\ord(\idealclass{p_{11}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{17}}) = 2 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{23}}) = 2 \cdot 3 \cdot 5^2 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{29}}) = 2 \cdot 3 \cdot 59 \cdot 157 \cdot 1451$
+\item $\ord(\idealclass{p_{31}}) = 2 \cdot 5 \cdot 59 \cdot 157 \cdot 1451$
+\end{itemize}
+
+where $\ideal p_p = [p, (b + \sqrt\Delta)/2]$.
+
+\bigskip
+Only $\idealclass{p_{23}}$ and $\idealclass{p_{29}}$ split $N$.
+
+\end{frame}
+
+% REUSING THE ORDER
+\begin{frame}
+\frametitle{Reusing the Order}
+Once the order of an ideal class is known, we skip the search phase.
+\begin{itemize}
+\item The exponentiation stage removed all small primes $\Rightarrow$ search stage not necessary.
+\item The exponentiation stage did not remove all small primes $\Rightarrow$ stepping coprime will never find the order.
+\end{itemize}
+For $N \le 2^{80}$, this is expected to work better than 97.7\% of the time.
+\end{frame}
+
+% 3D SUPERSPAR SEARCH SPACE
 \begin{frame}
 \frametitle{SuperSPAR Search Space}
 \framesubtitle{48-bit semiprimes}
@@ -896,6 +921,53 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \end{table}
 \end{frame}
 
+% BOX AND WHISKER PLOTS
+\begin{frame}
+\frametitle{Flint}
+\begin{figure}
+\includegraphics[scale=0.86]{factor-flint-whisker}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Pari}
+\begin{figure}
+\includegraphics[scale=0.86]{factor-pari-whisker}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{SQUFOF (Optimized from Pari)}
+\begin{figure}
+\includegraphics[scale=0.86]{factor-squfof-whisker}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Vanilla SPAR}
+\begin{figure}
+\includegraphics[scale=0.86]{factor-spar-whisker}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{SuperSPAR}
+\begin{figure}
+\includegraphics[scale=0.86]{factor-sspar-whisker}
+\end{figure}
+\end{frame}
+
+% AVERAGE TIMES
+\begin{frame}
+\frametitle{Average Integer Factoring Times}
+\includegraphics[scale=0.86]{factor-average}
+\end{frame}
+\begin{frame}
+\frametitle{Average Integer Factoring Times (Zoomed Left)}
+\includegraphics[scale=0.86]{factor-average-zoom-left}
+\end{frame}
+\begin{frame}
+\frametitle{Average Integer Factoring Times (Zoomed Right)}
+\includegraphics[scale=0.86]{factor-average-zoom-right}
+\end{frame}
+
+% SIMPLE CONTINUED FRACTION EXPANSION
 \begin{frame}
 \frametitle{Simple Continued Fraction Expansion of $K / L$}
 Recurrences:
