@@ -117,54 +117,10 @@
 
 % OVERVIEW
 \begin{frame}
-\frametitle{Overview}
-
-Major goals:
+\frametitle{Major Goals}
 \begin{itemize}
-\item Improve the performance of arithmetic in the ideal class group of imaginary quadratic number fields.
-	\begin{itemize}
-	\item Specifically when the discriminant of the class group is smaller than 128-bits.
-	\end{itemize}
-\item An optimized implementation of the SuperSPAR integer factoring algorithm for integers smaller than 128-bits.
-\end{itemize}
-
-\end{frame}
-
-% SOME USES
-\begin{frame}
-\frametitle{Some Possible Applications}
-These are just a few possible applications. \bigskip
-
-Ideal class group:
-\begin{itemize}
-\item Class group tabulation for larger discriminants \break (Ramachandran2006).
-\end{itemize}
-
-\bigskip
-Integer Factoring:
-\begin{itemize}
-\item Factoring left-overs after sieving in algorithms like the number field sieve using multiple large primes.
-\end{itemize}
-
-\end{frame}
-
-% CONTRIBUTIONS TO IDEAL CLASS GROUP ARITHMETIC
-\begin{frame}
-\frametitle{Contributions}
-Contributions to ideal class group arithmetic:
-\begin{itemize} %[<+->]
-\item Optimized implementations using 64 and 128-bit arithmetic.
-\item Optimized XGCD for 32, 64, and 128-bits.
-	\begin{itemize}
-	\item A simplified left-to-right binary XGCD (and partial XGCD).
-	\end{itemize}
-\end{itemize}
-
-\bigskip
-Contributions to integer factoring:
-\begin{itemize}
-\item SuperSPAR integer factoring algorithm.
-\item Left-to-right best approximations method for computing 2,3 representations of power primorials.
+\item Improve the performance of arithmetic in the ideal class group.
+\item An implementation of the SuperSPAR integer factoring algorithm.
 \end{itemize}
 \end{frame}
 
@@ -190,57 +146,18 @@ Based on NUCOMP, NUDUPL, and NUCUBE \\(Shanks, Jacobson, Williams, Imbert, Schmi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% XGCD
-\begin{comment}
-\begin{frame}
-\frametitle{Extended Greatest Common Divisor (XGCD)}
-Extended greatest common divisor solves
-\[
-	s = Ua + Vb = \gcd(a, b).
-\]
-Partial extended greatest common divisor solves
-TODO: This is madness
-\begin{eqnarray*}
-	s &= (-1)^z Ua + (-1)^{z+1} Vb \\
-	t &= (-1)^z Xa + (-1)^{z+1} Yb
-\end{eqnarray*}
-for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUCUBE.
-
-\end{frame}
-\end{comment}
-
 % XGCD Experiments
 \begin{frame}
 \frametitle{XGCD Experiments}
 \begin{itemize}
 \item 32-bit, 64-bit, 128-bit implementations.
-\item Extended Euclidean Algorithm.
-\item Windowed right-to-left binary XGCDs (Stein).
-\item Left-to-right binary XGCDs (Shallit and Sorenson, Brent${}^{*}$, and our simplified).
-\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and our L2R binary).
-\item Pari, GMP, and Flint${}^{*}$ as reference implementations.
+%\item Extended Euclidean Algorithm.
+%\item Windowed right-to-left binary XGCDs (Stein).
+%\item Left-to-right binary XGCDs (Shallit and Sorenson, Brent${}^{*}$, and our simplified).
+%\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and our L2R binary).
+\item Pari, GMP, and Flint as reference implementations.
 \item 1,000,000 pseudorandom positive integer pairs $(a,b)$ for each bit size.
 \end{itemize}
-
-\smallfont
-Items marked with ${}^{*}$ did not appear in thesis.
-\end{frame}
-
-% OUR XGCD
-\begin{frame}
-\frametitle{Our Left-to-Right Binary XGCD}
-\begin{algorithmic}[1]
-\Procedure{Our\_L2R\_XGCD}{$a, b}$ \Comment{$a, b \in \ZZgez$}
-\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
-\While {$t > 0$}
-	\State $k \gets $ \Call{NumBits}{$s$} - \Call{NumBits}{$t$}
-	\State subtract $2^k$ times the second row from the first
-	\If {$s < 0$} negate the first row \EndIf
-	\If {$s < t$} swap the rows of the matrix \EndIf
-\EndWhile
-\State \Return $(s, U, V)$
-\EndProcedure
-\end{algorithmic}
 \end{frame}
 
 % XGCD Results
@@ -295,28 +212,25 @@ All times are based on the average.  The measurement of improvement is an averag
 % Partial XGCD Experiments
 \begin{frame}
 \frametitle{Partial XGCD Experiments}
-Operations of partial XGCD must be unimodular.
 \begin{itemize}
 \item 32-bit, 64-bit, 128-bit implementations.
-\item Extended Euclidean Algorithm.
-\item Left-to-right binary XGCD (Brent and Ours).
-\item Lehmer's XGCD (64-bit EEA, Brent, and our L2R binary).
+\item Operations must be unimodular.
+%\item Extended Euclidean Algorithm.
+%\item Left-to-right binary XGCD (Brent and Ours).
+%\item Lehmer's XGCD (64-bit EEA, Brent, and our L2R binary).
 \item 1,000,000 pseudorandom positive integer triples $(a, b, T)$ with $0 \le b \le a$ and $0 \le T \le \sqrt a$.
 \end{itemize}
 
-\bigskip
-\smallfont
-Results are not in thesis.
 \end{frame}
 
 % PARTIAL XGCD RESULTS
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{32-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-32}
-\end{figure}
-\end{frame}
+%\begin{frame}
+%\frametitle{Partial XGCD Results}
+%\framesubtitle{32-bits}
+%\begin{figure}
+%\includegraphics[scale=0.86]{best-partial-32}
+%\end{figure}
+%\end{frame}
 \begin{frame}
 \frametitle{Partial XGCD Results}
 \framesubtitle{32-bits}
@@ -455,100 +369,26 @@ All times are based on the average.  The measurement of improvement is an averag
 % SPAR/SUPERSPAR
 \begin{frame}
 \frametitle{SPAR/SuperSPAR}
-SPAR/SuperSPAR operate in two stages:
+SPAR operates in two stages:
 \begin{itemize}
-\item Exponentiate a random ideal class.
-\item Search for the order of the resulting ideal class.
+\item Exponentiation stage.
+\item Search stage.
 \end{itemize}
-\end{frame}
 
-% EXPONENTIATION
-\begin{frame}
-\frametitle{Exponentiation by Odd Power Primorials}
-The goal is to compute
-\[
-\aclass ^ E
-\]
-for some ideal class $\aclass$ and exponent
-\[
-	E = \prod_{i=2}^k {p_i}^{e_i}
-\]
-where $p_i$ is the $\ith$ prime.
+\bigbreak
+SuperSPAR improves upon each stage.
 \end{frame}
 
 % EXPONENTIATION METHOD
 \begin{frame}
-\frametitle{Method}
-How to test?
-\begin{itemize}
-\item Many discriminant sizes.
-\item Need a good representation of groups and elements.
-\end{itemize}
-
-\bigbreak
-How did we test?
+\frametitle{How did we test exponentiation?}
+TODO: Think about this.
 \begin{itemize}
 \item Compute 2,3 representations in advance for each technique.
 \item Use average time for largest discriminant size \\ (59-bits and 118-bits).
 \item Simulate using Yao's algorithm for double-base exponentiation.
 \end{itemize}
 \end{frame}
-
-
-% EXPONENTIATION TECHNIQUES
-\begin{frame}
-\frametitle{Representations Tested}
-Representations tested:
-\begin{itemize}
-\item Binary, Non-Adjacent Form (for reference)
-\item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
-\item Left-to-Right (Berth{\'e} and Imbert).
-\item Pruned Trees (Doche and Habsieger).
-\item Our Left-to-Right Best Approximations \break (combines Left-to-Right and Pruned Trees)
-\end{itemize}
-\end{frame}
-
-% L2R BEST APPROXIMATIONS
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
-\begin{itemize}
-\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
-\item Keep the best $2^a 3^b$ approximations for each $x$.
-\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- First Iteration on 777}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-777}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-9-48-87-129}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example Results}
-2,3 Representations for $E=777$:
-\begin{align*}
-2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
-2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
-2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
-2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
-\end{align*}
-
-\bigskip
-$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
-\end{frame}
-
-
 
 
 % EXPONENTIATION RESULTS
@@ -573,8 +413,8 @@ How much faster than the reference implementations?
 \centering
 \begin{tabular}{ | l | l | l | l | l | }
 \hline
-& \multirow{2}{*}{Binary} & \multirow{2}{*}{NAF} & Pruned & Left-to-Right \\
-& & & Trees & Representations \\
+& \multirow{2}{*}{Binary} & \multirow{2}{*}{NAF} & Pruned & Greedy \\
+& & & Tree & Left-toRight \\
 \hline
 Left-to-Right Best & \multirow{3}{*}{1.40} & \multirow{3}{*}{1.25} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.13}} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.009}} \\
 Approximations & & & &\\
@@ -595,24 +435,6 @@ Approximations & & & &\\
 All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% SUPERSPAR
-\begin{frame}
-\frametitle{SuperSPAR}
-SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal class group of imaginary quadratic integers.
-\begin{itemize}
-\item Extends SPAR using a bounded primorial steps search.
-\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
-\item Fastest median time for integers 49-bits to 68-bits of size.
-\item Fastest average time for integers 49-bits to 64-bits of size.
-\end{itemize}
-\bigbreak
-\smallfont
-Median times do not appear in thesis.
-\end{frame}
 
 % EVOLUTION OF SUPERSPAR
 \begin{frame}
@@ -697,7 +519,6 @@ Median times do not appear in thesis.
 Some work that is currently in progress or eagerly awaiting:
 \begin{itemize}
 \item Special case for quotients $q \le 4$ in XGCD.
-\item Simplified left-to-right binary partial XGCD.
 \item Real quadratic fields and hyperelliptic curves.
 \item Improvements to left-to-right best approximations algorithm.
 \end{itemize}
@@ -708,11 +529,10 @@ Some work that is currently in progress or eagerly awaiting:
 \frametitle{Thank You}
 Summary of performance improvements:
 \begin{itemize}
-\item Arithmetic in the ideal class group of imaginary quadratic number fields for negative discriminants smaller than 118-bits.
-\item The extended GCD for inputs smaller than 128-bits.
+\item Arithmetic in the ideal class group for discriminants smaller than 118-bits.
+\item The extended GCD for inputs smaller than 128-bits).
+\item Integer factoring for integers 49-bits to 68-bits of size (median case).
 \item 2,3 representations for exponentiating by power primorials.
-\item Integer factoring for integers 49-bits to 64-bits of size (Average case TODO).
-\item Integer factoring for integers 49-bits to 68-bits of size (Median case).
 \end{itemize}
 \end{frame}
 
@@ -721,6 +541,77 @@ Summary of performance improvements:
 %%%%%%%%%%%%%%%%%%
 % END OF DEFENCE %
 %%%%%%%%%%%%%%%%%%
+
+% SOME USES
+\begin{frame}
+\frametitle{Some Possible Applications}
+These are just a few possible applications. \bigskip
+
+Ideal class group:
+\begin{itemize}
+\item Class group tabulation for larger discriminants \break (Ramachandran2006).
+\end{itemize}
+
+\bigskip
+Integer Factoring:
+\begin{itemize}
+\item Factoring left-overs after sieving in algorithms like the number field sieve using multiple large primes.
+\end{itemize}
+
+\end{frame}
+
+% CONTRIBUTIONS TO IDEAL CLASS GROUP ARITHMETIC
+\begin{frame}
+\frametitle{Contributions}
+Contributions to ideal class group arithmetic:
+\begin{itemize} %[<+->]
+\item Optimized implementations using 64 and 128-bit arithmetic.
+\item Optimized XGCD for 32, 64, and 128-bits.
+	\begin{itemize}
+	\item A simplified left-to-right binary XGCD (and partial XGCD).
+	\end{itemize}
+\end{itemize}
+
+\bigskip
+Contributions to integer factoring:
+\begin{itemize}
+\item SuperSPAR integer factoring algorithm.
+\item Left-to-right best approximations method for computing 2,3 representations of power primorials.
+\end{itemize}
+\end{frame}
+
+% XGCD
+\begin{frame}
+\frametitle{Extended Greatest Common Divisor (XGCD)}
+Extended greatest common divisor solves
+\[
+	s = Ua + Vb = \gcd(a, b).
+\]
+Partial extended greatest common divisor solves
+TODO: This is madness
+\begin{eqnarray*}
+	s &= (-1)^z Ua + (-1)^{z+1} Vb \\
+	t &= (-1)^z Xa + (-1)^{z+1} Yb
+\end{eqnarray*}
+for $t \le B < s$ for some termination bound $B$ given by NUCOMP, NUDUPL, or NUCUBE.
+\end{frame}
+
+% OUR XGCD
+\begin{frame}
+\frametitle{Our Left-to-Right Binary XGCD}
+\begin{algorithmic}[1]
+\Procedure{Our\_L2R\_XGCD}{$a, b}$ \Comment{$a, b \in \ZZgez$}
+\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
+\While {$t > 0$}
+	\State $k \gets $ \Call{NumBits}{$s$} - \Call{NumBits}{$t$}
+	\State subtract $2^k$ times the second row from the first
+	\If {$s < 0$} negate the first row \EndIf
+	\If {$s < t$} swap the rows of the matrix \EndIf
+\EndWhile
+\State \Return $(s, U, V)$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
 
 
 % LEFT-TO-RIGHT BINARY XGCDs
@@ -801,6 +692,91 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \includegraphics[scale=0.86]{cube-sqrtopt-128}
 \end{figure}
 \end{frame}
+
+
+% EXPONENTIATION
+\begin{frame}
+\frametitle{Exponentiation by Odd Power Primorials}
+The goal is to compute
+\[
+\aclass ^ E
+\]
+for some ideal class $\aclass$ and exponent
+\[
+	E = \prod_{i=2}^k {p_i}^{e_i}
+\]
+where $p_i$ is the $\ith$ prime.
+\end{frame}
+
+% L2R BEST APPROXIMATIONS
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
+\begin{itemize}
+\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
+\item Keep the best $2^a 3^b$ approximations for each $x$.
+\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- First Iteration on 777}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-777}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-9-48-87-129}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example Results}
+2,3 Representations for $E=777$:
+\begin{align*}
+2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
+2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
+2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
+2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
+\end{align*}
+
+\bigskip
+$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
+\end{frame}
+
+% EXPONENTIATION TECHNIQUES
+\begin{frame}
+\frametitle{Representations Tested}
+Representations tested:
+\begin{itemize}
+\item Binary, Non-Adjacent Form (for reference)
+\item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
+\item Left-to-Right (Berth{\'e} and Imbert).
+\item Pruned Trees (Doche and Habsieger).
+\item Our Left-to-Right Best Approximations \break (combines Left-to-Right and Pruned Trees)
+\end{itemize}
+\end{frame}
+
+
+% SUPERSPAR
+\begin{frame}
+\frametitle{SuperSPAR}
+SuperSPAR is an integer factoring algorithm based on arithmetic in the ideal class group of imaginary quadratic integers.
+\begin{itemize}
+\item Extends SPAR using a bounded primorial steps search.
+\item Uses improvements to ideal class group arithmetic and 2,3 representations of power primorials.
+\item Fastest median time for integers 49-bits to 68-bits of size.
+\item Fastest average time for integers 49-bits to 64-bits of size.
+\end{itemize}
+\bigbreak
+\smallfont
+Median times do not appear in thesis.
+\end{frame}
+
 
 % FACTORIZATION OF THE ORDER, E.G. 1
 \begin{frame}
