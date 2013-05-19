@@ -594,7 +594,7 @@ for the largest $s$ dividing both $a$ and $b$.
 \begin{frame}
 \frametitle{Extended Euclidean Algorithm}
 \begin{algorithmic}[1]
-\Procedure{EEA}{$a, b}$ \Comment{$a, b \in \ZZgez$}
+\Procedure{EEA}{$a, b$} \Comment{$a, b \in \ZZgez$}
 \State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
 \While {$t > 0$}
 	\State $q \gets \floor{s/t}$
@@ -610,7 +610,7 @@ for the largest $s$ dividing both $a$ and $b$.
 \begin{frame}
 \frametitle{Our Left-to-Right Binary XGCD}
 \begin{algorithmic}[1]
-\Procedure{Our\_L2R\_XGCD}{$a, b}$ \Comment{$a, b \in \ZZgez$}
+\Procedure{Our\_L2R\_XGCD}{$a, b$} \Comment{$a, b \in \ZZgez$}
 \State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
 \While {$t > 0$}
 	\State $k \gets $ \Call{NumBits}{$s$} - \Call{NumBits}{$t$}
@@ -622,6 +622,28 @@ for the largest $s$ dividing both $a$ and $b$.
 \EndProcedure
 \end{algorithmic}
 \end{frame}
+
+% OUR PXGCD
+\begin{frame}
+\frametitle{Our Left-to-Right Binary PXGCD}
+\begin{algorithmic}[1]
+\Procedure{Our\_L2R\_PXGCD}{$a, b, T$} \Comment{$a, b, T \in \ZZgez$}
+\State $\matrixtt{r_1}{c_1}{r_0}{c_0} \gets \matrixtt{a}{0}{b}{-1}$
+\State $z \gets 0, s_1 \gets 1, s_0 \gets 1$
+\While {$r_0 \neq 0$ and $r_0 > T$}
+	\State $k \gets $ \Call{NumBits}{$r_1$} - \Call{NumBits}{$r_0$}
+	\State subtract $2^k$ times the second row from the first
+	\If {$r_1 < 0$} $r_1 \gets -r_1, c_1 \gets -c_1, s_1 \gets -s_1$ \EndIf
+	\If {$r_1 < r_0$}
+		\State swap the rows of the matrix and $s_1$ with $s_0$
+		\State $z \gets z + 1$
+	\EndIf
+\EndWhile
+\State \Return $(s_1 \cdot r_1, s_1 \cdot c_1, s_0 \cdot r_0, s_0 \cdot c_0, z)$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+
 
 % BINARY XGCD OPTIMIZATION
 \begin{frame}
