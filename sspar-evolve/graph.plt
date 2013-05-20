@@ -7,14 +7,14 @@ set ylabel 'Average Time (Microseconds)'
 set output 'spar-vanilla.eps'
 set xrange [16:40]
 set yrange [0:12000]
-plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR'
+plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'Reference SPAR'
 
 set output 'spar-bound-attempts.eps'
-plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR', \
+plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'Reference SPAR', \
      'spar-dyn-attempts-timings.dat' using 1:7 with lines t 'Limit Ideals per Group'
      
 set output 'spar-to-sspar.eps'
-plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'SPAR', \
+plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'Reference SPAR', \
      'spar-dyn-attempts-timings.dat' using 1:7 with lines t 'Limit Ideals per Group' lc 2, \
      'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial Steps' lc 3
 
@@ -41,6 +41,6 @@ plot 'sspar-theoretical-timings.dat' using 1:7 with lines t 'Bounded Primorial S
 set xrange [16:40]
 set yrange [*:*]
 set output 'spar-vs-sspar.eps'
-plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'Vanilla SPAR' lc 1, \
-     'sspar-optimized-timings.dat' using 1:7 with lines t 'Tweaked SuperSPAR' lc 3
+plot 'spar-vanilla-timings.dat' using 1:7 with lines t 'Reference SPAR' lc 1, \
+     'sspar-optimized-timings.dat' using 1:7 with lines t 'SuperSPAR' lc 3
      

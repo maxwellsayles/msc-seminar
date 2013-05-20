@@ -135,11 +135,11 @@ Based on NUCOMP, NUDUPL, and NUCUBE \\(Shanks, Jacobson, Williams, Imbert, Schmi
 	\begin{itemize}
 	\item A reference implementation using GMP.
 	\end{itemize}
-\item Extended greatest common divisor.
-\item Partial extended greatest common divisor.
-	\begin{itemize}
-	\item Termination bound is approximated using a square root approximation.
-	\end{itemize}
+\item Full/Partial Extended greatest common divisor.
+%\item Partial extended greatest common divisor.
+%	\begin{itemize}
+%	\item Termination bound is approximated using a square root approximation.
+%	\end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -437,7 +437,7 @@ All times are based on the average.  The measurement of improvement is an averag
 
 % EVOLUTION OF SUPERSPAR
 \begin{frame}
-\frametitle{SPAR}
+\frametitle{Reference Implementation of SPAR}
 \begin{figure}
 \includegraphics[scale=0.86]{spar-vanilla}
 \end{figure}
@@ -502,14 +502,12 @@ All times are based on the average.  The measurement of improvement is an averag
 
 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % FUTURE WORK
 \begin{frame}
 \frametitle{Future Work}
-Some work that is currently in progress or eagerly awaiting:
+Some work that is eagerly awaiting:
 \begin{itemize}
 \item Special case for quotients $q \le 4$ in XGCD.
 \item Real quadratic fields and hyperelliptic curves.
