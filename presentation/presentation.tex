@@ -92,7 +92,8 @@
     \usebeamerfont{author in head/foot} \hspace*{2em} \insertshortauthor \hspace*{2em}
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
-    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
+    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ 39 \hspace*{2em}
+%    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
 %    \usebeamerfont{title in head/foot} \hspace*{2em} \insertshorttitle \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
   \end{beamercolorbox}}%
   \vskip0pt%
@@ -286,8 +287,9 @@ All times are based on the average.  The measurement of improvement is an averag
 \frametitle{Ideal Class Group Experiments}
 \begin{itemize}
 \item 64-bit and 128-bit (GMP and Pari for comparison).
-\item 10,000 groups (1000 multiplications, 1000 squares, and \break 1000 cubes).
 \item Negative discriminants from 16-bits to 118-bits of size.
+\item 10,000 groups.
+\item 1000 multiplications, squares, and cubes.
 \item About one CPU day.
 \end{itemize}
 \end{frame}
@@ -413,7 +415,7 @@ How much faster than the reference implementations?
 \begin{tabular}{ | l | l | l | l | l | }
 \hline
 & \multirow{2}{*}{Binary} & \multirow{2}{*}{NAF} & Pruned & Greedy \\
-& & & Tree & Left-toRight \\
+& & & Tree & Left-to-Right \\
 \hline
 Left-to-Right Best & \multirow{3}{*}{1.40} & \multirow{3}{*}{1.25} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.13}} & \multicolumn{1}{|r|}{\multirow{3}{*}{1.009}} \\
 Approximations & & & &\\
@@ -722,6 +724,20 @@ which is approximated by shifting $x$ right by $\floor{\floor{\log_2x+1}/2}$ bit
 \begin{figure}
 \includegraphics[scale=0.86]{cube-sqrtopt-128}
 \end{figure}
+\end{frame}
+
+
+% CUBING -- BIG INTERMEDIATES
+\begin{frame}
+\frametitle{Large Intermediates During Cubing}
+Ideal Cubing (Algorithm 2.4, Page 19).
+\begin{align*}
+U &= Y'c_1(Y'(b_1 - Y'c_1a_1) - 2) \bmod {a_1}^2 & \textrm{\{line 4\}}\\
+U &= -c_1(XY'a_1+Yb_1) \bmod {a_1}^2/s & \textrm{\{line 7\}} \\
+M_1 &= \frac{(R_ia_1 + C_iUa_1)}{{a_1}^2} & \textrm{\{line 19\}} \\
+M_2 &= \frac{R_i(b_1 + Ua_1) - sC_ic_1}{{a_1}^2} & \textrm{\{line 20\}} \\
+\end{align*}
+The problem is $a_1 \le \sqrt{|\Delta|/3}$ so ${a_1}^2 \le |\Delta|/3$.
 \end{frame}
 
 
