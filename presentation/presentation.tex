@@ -387,22 +387,22 @@ SuperSPAR improves upon each stage.
 \begin{itemize}
 \item Use average time of class group operations.
 \item Compute 2,3 representations in advance for each technique.
-\item Compute the time to exponentiate given a representation and the average cost of group operations.
+\item Estimate the time to exponentiate given a representation and the average cost of group operations.
 \end{itemize}
 \end{frame}
 
 
 % EXPONENTIATION RESULTS
 \begin{frame}
-\frametitle{Exponentiation Results (64-bit Implementation)}
+\frametitle{Exponentiation Results (59-bit Discriminants)}
 \begin{figure}
-\includegraphics[scale=0.86]{pow-winners-64}
+\includegraphics[scale=0.86]{pow-winners-59}
 \end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Exponentiation Results (128-bit Implementation)}
+\frametitle{Exponentiation Results (118-bit Discriminants)}
 \begin{figure}
-\includegraphics[scale=0.86]{pow-winners-128}
+\includegraphics[scale=0.86]{pow-winners-118}
 \end{figure}
 \end{frame}
 
@@ -816,6 +816,51 @@ Left-to-Right best approximations is a technique combining the greedy approach o
 \bigskip
 $2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
 \end{frame}
+
+% ESTIMATES FOR MANY SIZES
+\begin{frame}
+\frametitle{Exponentiation Results (16-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-16}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Exponentiation Results (32-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-32}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Exponentiation Results (48-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-48}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Exponentiation Results (64-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-64}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Exponentiation Results (80-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-80}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Exponentiation Results (96-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-96}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Exponentiation Results (112-bit Discriminants)}
+\begin{figure}
+\includegraphics[scale=0.86]{pow-winners-112}
+\end{figure}
+\end{frame}
+
 
 
 % SUPERSPAR
