@@ -70,10 +70,10 @@
 
 \graphicspath{{eps/}{png/}{l2r-best-approx/}}
 
-\title[]{Improved Arithmetic in the Ideal Class Group of Imaginary Quadratic Number Fields}
-\subtitle{With an Application to Integer Factoring}
+\title[]{SuperSPAR}
+\subtitle{An Integer Factoring Algorithm}
 \author{Maxwell Sayles}
-\date{May 22, 2013}
+\date{May 24, 2013}
 \institute{
 	\bigskip 
        Department of Computer Science \\
@@ -83,38 +83,108 @@
 \usetheme{Copenhagen}
 \setbeamertemplate{navigation symbols}{} %no nav symbols
 
-% TODO: Force page count
 \makeatletter
 \setbeamertemplate{footline}
 {%
   \leavevmode%
   \hbox{\begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm plus1fill,rightskip=.3cm]{author in head/foot}%
-    \usebeamerfont{author in head/foot} \hspace*{2em} \insertshortauthor \hspace*{2em}
+    \usebeamerfont{author in head/foot} \hspace*{2em} SuperSPAR \hspace*{2em}
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
-    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ 39 \hspace*{2em}
-%    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
-%    \usebeamerfont{title in head/foot} \hspace*{2em} \insertshorttitle \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
+    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
   \end{beamercolorbox}}%
   \vskip0pt%
 }
 \makeatother
 
 
-% What's important is to state and motivate the topic, highlight/outline your original results and contributions, give an overview of your methodology, assess significance, and give some interesting future work.  
-
-%Ideal Class Group - NUCOMP, NUDUPL, NUCUBE... XGCD
-%Exponentiation - 2,3 number system. L2R and Tree based.
-%SPAR
-
-%Improvements:
-%- XGCD
-%- left-to-right best approximations
-%- SuperSPAR
-
-
 \begin{document}
 \maketitle
+
+% OVERVIEW
+\begin{frame}
+\frametitle{Overview}
+What is SuperSPAR?
+\begin{itemize}
+\item Improves upon SPAR (named after Shanks, Pollard, Atkin, and Rickert).
+\item Based on arithmetic in the ideal class group of imaginary quadratic number fields.
+\item Uses the order of an element in this group to factor an integer.
+\begin{itemize}
+\item Exponentiation stage.
+\item Search stage.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Binary Quadratic Forms}
+\begin{itemize}
+\item $Q(x, y) = ax^2 + bxy + cy^2$
+\item $\Delta = b^2 - 4ac$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Equivalence of Forms}
+Two forms are equivalent
+\[
+Q(x, y) \sim Q'(x,y)
+\]
+if there exists an invertible integral linear transformation
+\begin{align*}
+x &= \alpha x' + \beta y' \\
+y &= \gamma x' + \delta y'.
+\end{align*}
+Substitution and simplification give
+\begin{eqnarray*}
+ax^2 + bxy + cy^2
+	&=& a(\alpha x' + \beta y')^2 \\
+	&& + b(\alpha x' + \beta y')(\gamma x' + \delta y') \\
+	&& + c(\gamma x' + \delta y')^2 \\
+	&=& a'{x'}^2 + b'x'y' + c'{y'}^2
+\end{eqnarray*}
+\end{frame}
+
+% IDEAL MULTIPLICATION
+\begin{frame}
+\frametitle{Ideal Multiplication}
+\begin{algorithmic}[1]
+\Require Ideals $(a_1, b_1, c_1)$, $(a_2, b_2, c_2)$, and $\Delta$.
+\State $s = \gcd(a_1, a_2, (b_1+b_2)/2) = Ya_1 + Va_2 + W(b_1+b_2)/2$
+\State $U = (V(b_1-b_2)/2 - Wc_2) \bmod{(a_1/s)}$
+\State $a = (a_1a_2)/s^2$
+\State $b = (b_2 + 2Ua_2/s) \bmod{2a}$
+\State $c = (b^2 - \Delta)/4a$
+\end{algorithmic}
+\end{frame}
+
+% IDEAL MULTIPLICATION
+\begin{frame}
+\frametitle{Split XGCD}
+
+Split $s = \gcd(a_1, a_2, (b_1+b_2)/2) = Ya_1 + Va_2 + W(b_1+b_2)/2$ into two computations.
+\bigbreak
+
+\begin{algorithmic}[1]
+\Require Ideals $(a_1, b_1, c_1)$, $(a_2, b_2, c_2)$, and $\Delta$.
+\State $s' = \gcd(a_1, a_2) = Y'a_1 + V'a_2$ \Comment{$Y'$ is never used}
+\If {$s' = 1$}
+\State $s = 1, V = V', W = 0$
+\Else
+\State $s = \gcd(s', (b_1 + b_2)/2) = V''s' + W(b_1 + b_2)/2$
+\State $V = V'V''$ 
+\EndIf
+\State ...
+\end{algorithmic}
+\end{frame}
+
+% IDEAL REDUCTION
+\begin{frame}
+\frametitle{Ideal Reduction}
+Note $-\Delta = 4ac - b^2 \ge 4ac-a^2 \ge 3a^2$. \\
+$\Rightarrow |b| \le a \le \sqrt{|\Delta|/3}$
+\end{frame}
+
 
 % OVERVIEW
 \begin{frame}
