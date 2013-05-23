@@ -1,8 +1,0 @@
-Ideal Class Group - NUCOMP, NUDUPL, NUCUBE... XGCD
-Exponentiation - 2,3 number system. L2R and Tree based.
-SPAR
-
-Improvements:
-- XGCD
-- left-to-right best approximations
-- SuperSPAR
