@@ -288,6 +288,7 @@ Three varieties:
 \end{align*}
 \end{frame}
 
+% FINDING AN AMBIGUOUS FORM
 \begin{frame}
 \frametitle{Finding an Ambiguous Form}
 Let $h = \ord(q)$ such that $q^h = 1_G$.
@@ -295,80 +296,91 @@ Let $h = \ord(q)$ such that $q^h = 1_G$.
 \bigbreak
 If $h$ is even, then let $h'$ be the odd part of $h$ and
 \[
-	q^{h'}^{\left(2^j\right)}
+	{q^{h'}}^{\left(2^j\right)}
 \]
 is an ambiguous form.
 \end{frame}
 
-
-
-% OVERVIEW
+% FINDING THE ORDER
 \begin{frame}
-\frametitle{Major Goals}
+\frametitle{How Do We Find the Order?}
 \begin{itemize}
-\item Improve the performance of arithmetic in the ideal class group.
-\item SuperSPAR integer factoring algorithm.
+\item Exponentiate $q^E$ for $E = \prod {p_i}^{e_i}$ for odd primes $p_i$.
+\item Use an order finding algorithm. 
 \end{itemize}
 \end{frame}
 
-  
-% IDEAL CLASS GROUP ARITHMETIC
-\begin{frame}
-\frametitle{Arithmetic in the Ideal Class Group}
-Based on NUCOMP, NUDUPL, and NUCUBE \\(Shanks, Jacobson, Williams, Imbert, Schmidt).
 
-\begin{itemize}
-\item Implementations for 64-bit and 128-bit arithmetic.
-	\begin{itemize}
-	\item A reference implementation using GMP.
-	\end{itemize}
-\item Full/Partial extended greatest common divisor.
-%\item Partial extended greatest common divisor.
-%	\begin{itemize}
-%	\item Termination bound is approximated using a square root approximation.
-%	\end{itemize}
-\end{itemize}
-
-\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% XGCD Experiments
+  
+% IMPROVE IDEAL ARITHMETIC
 \begin{frame}
-\frametitle{XGCD Experiments}
+\frametitle{Improvements to Group Arithmetic}
 \begin{itemize}
-\item 32-bit, 64-bit, 128-bit implementations.
-%\item Extended Euclidean Algorithm.
-%\item Windowed right-to-left binary XGCDs (Stein).
-%\item Left-to-right binary XGCDs (Shallit and Sorenson, Brent${}^{*}$, and our simplified).
-%\item Lehmer's XGCD (8-bit precomputed, 32-bit EEA, 64-bit EEA and our L2R binary).
-\item Pari, GMP, and Flint as reference implementations.
-\item 1,000,000 pseudorandom positive integer pairs $(a,b)$ for each bit size.
+\item Implementations for 64-bit and 128-bit arithmetic.
+\item Full/Partial extended greatest common divisor.
 \end{itemize}
 \end{frame}
 
-% XGCD Results
+% XGCD
 \begin{frame}
-\frametitle{XGCD Results}
-\framesubtitle{32-bit}
+\frametitle{How to Compute XGCD?}
+Start with
+\begin{align*}
+s &= Ua + Vb \\
+t &= Xa + Yb
+\end{align*}
+with
+\[
+\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}.
+\]
+Maintain $s \ge t \ge 0$.
+\end{frame}
+
+% EEA
+\begin{frame}
+\frametitle{Extended Euclidean Algorithm}
+\begin{algorithmic}[1]
+\Procedure{EEA}{$a, b$} \Comment{$a, b \in \ZZgez$}
+\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
+\While {$t > 0$}
+	\State $q \gets \floor{s/t}$
+	\State subtract $q$ times the second row from the first
+	\State swap rows so that $s \ge t$
+\EndWhile
+\State \Return $(s, U, V)$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+
+
+% OUR XGCD
+\begin{frame}
+\frametitle{Our Left-to-Right Binary XGCD}
+\begin{algorithmic}[1]
+\Procedure{Our\_L2R\_XGCD}{$a, b$} \Comment{$a, b \in \ZZgez$}
+\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
+\While {$t > 0$}
+	\State $k \gets $ \Call{NumBits}{$s$} - \Call{NumBits}{$t$}
+	\State subtract $2^k$ times the second row from the first
+	\If {$s < 0$} negate the first row \EndIf
+	\If {$s < t$} swap the rows of the matrix \EndIf
+\EndWhile
+\State \Return $(s, U, V)$
+\EndProcedure
+\end{algorithmic}
+\end{frame}
+
+% BINARY XGCD OPTIMIZATION
+\begin{frame}
+\frametitle{Binary XGCD Optimizations}
+\framesubtitle{64-bit simplified left-to-right binary XGCD}
 \begin{figure}
-\includegraphics[scale=0.86]{xgcd-best-32}
+\includegraphics[scale=0.86]{xgcd-binary-optimizations-64}
 \end{figure}
 \end{frame}
-\begin{frame}
-\frametitle{XGCD Results}
-\framesubtitle{64-bit}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcd-best-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{XGCD Results}
-\framesubtitle{128-bit}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcd-best-128}
-\end{figure}
-\end{frame}
+
 
 % XGCD QUANTIFIED RESULTS
 \begin{frame}
@@ -394,141 +406,9 @@ Bit Range & Algorithm & GMP & Pari & Flint \\
 All times are based on the average.  The measurement of improvement is an average over the bit range.
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Partial XGCD Experiments
+% CLASS GROUP IMPROVEMENTS
 \begin{frame}
-\frametitle{Partial XGCD Experiments}
-\begin{itemize}
-\item Operations must be unimodular.
-\item 32-bit, 64-bit, 128-bit implementations.
-%\item Extended Euclidean Algorithm.
-%\item Left-to-right binary XGCD (Brent and Ours).
-%\item Lehmer's XGCD (64-bit EEA, Brent, and our L2R binary).
-\item 1,000,000 pseudorandom positive integer triples $(a, b, T)$ with $0 \le b \le a$ and $0 \le T \le \sqrt a$.
-\end{itemize}
-
-\end{frame}
-
-% PARTIAL XGCD RESULTS
-%\begin{frame}
-%\frametitle{Partial XGCD Results}
-%\framesubtitle{32-bits}
-%\begin{figure}
-%\includegraphics[scale=0.86]{best-partial-32}
-%\end{figure}
-%\end{frame}
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{32-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-32-2}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{64-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Partial XGCD Results}
-\framesubtitle{128-bits}
-\begin{figure}
-\includegraphics[scale=0.86]{best-partial-128}
-\end{figure}
-\end{frame}
-
-% PXGCD QUANTIFIED RESULTS
-\begin{frame}
-\frametitle{Partial XGCD Improvement}
-How much faster than the reference implementation?
-\begin{table}
-\centering
-\begin{tabular}{ | r | l | r | }
-\hline
-\multirow{2}{*}{Bit Range} & \multirow{2}{*}{Algorithm} & GMP Lehmer \\
-& & w/ 64-bit EEA \\
-\hline
-1 -- 15 & Brent & 11.12 \\
-16 -- 31 & Our L2R Binary & 6.14 \\
-32 -- 63 & Our L2R Binary & 4.37 \\
-64 -- 103 & Our L2R Binary & 3.18 \\
-104 -- 127 & Lehmer w/ Our 64-bit L2R & 2.31 \\
-\hline
-\end{tabular}
-\end{table}
-
-\bigskip
-\smallfont
-All times are based on the average.  The measurement of improvement is an average over the bit range.
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% IDEAL CLASS GROUP EXPERIMENTS
-\begin{frame}
-\frametitle{Ideal Class Group Experiments}
-\begin{itemize}
-\item 64-bit and 128-bit (GMP and Pari for comparison).
-\item Negative discriminants from 16-bits to 118-bits of size.
-\item 10,000 groups.
-\item 1000 multiplications, squares, and cubes.
-\item About one CPU day.
-\end{itemize}
-\end{frame}
-
-% IDEAL CLASS GROUP RESULTS
-\begin{frame}
-\frametitle{Ideal Class Group Results}
-\framesubtitle{64-bit multiplication}
-\begin{figure}
-\includegraphics[scale=0.86]{compose-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Ideal Class Group Results}
-\framesubtitle{64-bit squaring}
-\begin{figure}
-\includegraphics[scale=0.86]{square-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Ideal Class Group Results}
-\framesubtitle{64-bit cubing}
-\begin{figure}
-\includegraphics[scale=0.86]{cube-64}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Ideal Class Group Results}
-\framesubtitle{128-bit multiplication}
-\begin{figure}
-\includegraphics[scale=0.86]{compose-128}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Ideal Class Group Results}
-\framesubtitle{128-bit squaring}
-\begin{figure}
-\includegraphics[scale=0.86]{square-128}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Ideal Class Group Results}
-\framesubtitle{128-bit cubing}
-\begin{figure}
-\includegraphics[scale=0.86]{cube-128}
-\end{figure}
-\end{frame}
-
-
-
-% IDEAL CLASS GROUP IMPROVEMENTS
-\begin{frame}
-\frametitle{Ideal Class Group Improvement}
+\frametitle{Class Group Improvements}
 How much faster than the reference implementations?
 \begin{table}
 \centering
@@ -554,45 +434,94 @@ All times are based on the average.  The measurement of improvement is an averag
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-
-% SPAR/SUPERSPAR
+% SUPERSPAR
 \begin{frame}
-\frametitle{SPAR/SuperSPAR}
-SPAR operates in two stages:
-\begin{itemize}
-\item Exponentiation stage.
-\item Search stage.
-\end{itemize}
-
-\bigbreak
-SuperSPAR improves upon each stage.
+\frametitle{Exponentiation Stage of SuperSPAR}
+Exponentiate a random form to the product of many odd prime powers.
+\[
+E = \prod {p_i}^{e_i}
+\]
 \end{frame}
 
-% EXPONENTIATION METHOD
+% 2,3 REPRESENTATIONS
 \begin{frame}
-\frametitle{Power Primorial Exponentiation Experiments}
+\frametitle{2,3 Representations}
+\[
+N = \sum_{i=0}^k s_i 2^{a_i} 3^{b_i}.
+\]
+Example:
 \begin{itemize}
-\item Use average time of class group operations.
-\item Compute 2,3 representations in advance for each technique.
-\item Estimate the time to exponentiate given a representation and the average cost of group operations.
+\item $23814216 = 2^3+2^6+2^{13}+2^{14}+2^{16}+2^{17}+2^{19}+2^{21}+2^{22}+2^{24}$
+\item $23814216 = 2^3 3^3 - 2^4 3^5 + 2^5 3^6  + 2^7 3^7 + 2^9 3^8 + 2^{10} 3^9$
+\item $23814216 = 2^3 3^3 -2^4 3^6 -2^8 3^5 +2^{15} 3^6$
+\item $23814216 = 2^3 3^2 -2^{13} 3^2 +2^{15} 3^6$
 \end{itemize}
 \end{frame}
 
-
-% EXPONENTIATION RESULTS
 \begin{frame}
-\frametitle{Exponentiation Results (59-bit Discriminants)}
+\frametitle{How to Exponentiate 2,3 Representations?}
+First we nest common factors of 2:
+\[
+2^{15} 3^6 -2^8 3^5 -2^4 3^6 +2^3 3^3 = (((3^6 2^7 - 3^5) 2^4 -3^6) 2^1 +3^3) 2^3
+\]
+\end{frame}
+
+
+% HOW TO EXPONENTIATE
+\begin{frame}
+\frametitle{Exponentiating $g^{2^{15} 3^6 -2^8 3^5 -2^4 3^6 +2^3 3^3}$}
 \begin{figure}
-\includegraphics[scale=0.86]{pow-winners-59}
+\includegraphics[scale=0.70]{yao1}
 \end{figure}
 \end{frame}
 \begin{frame}
-\frametitle{Exponentiation Results (118-bit Discriminants)}
+\frametitle{Exponentiating $g^{2^{15} 3^6 -2^8 3^5 -2^4 3^6 +2^3 3^3}$}
 \begin{figure}
-\includegraphics[scale=0.86]{pow-winners-118}
+\includegraphics[scale=0.70]{yao2}
 \end{figure}
 \end{frame}
+
+
+% L2R BEST APPROXIMATIONS
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
+\begin{itemize}
+\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
+\item Keep the best $2^a 3^b$ approximations for each $x$.
+\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- First Iteration on 777}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-777}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
+\begin{figure}
+\includegraphics[scale=0.84]{best-approx-9-48-87-129}
+\end{figure}
+\end{frame}
+\begin{frame}
+\frametitle{Left-to-Right Best Approximations}
+\framesubtitle{Example Results}
+2,3 Representations for $E=777$:
+\begin{align*}
+2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
+2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
+2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
+2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
+\end{align*}
+
+\bigskip
+$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
+\end{frame}
+
 
 % EXPONENTIATION IMPROVEMENTS
 \begin{frame}
@@ -778,38 +707,6 @@ Extended greatest common divisor solves
 for the largest $s$ dividing both $a$ and $b$.
 \end{frame}
 
-% EEA
-\begin{frame}
-\frametitle{Extended Euclidean Algorithm}
-\begin{algorithmic}[1]
-\Procedure{EEA}{$a, b$} \Comment{$a, b \in \ZZgez$}
-\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
-\While {$t > 0$}
-	\State $q \gets \floor{s/t}$
-	\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixtt{0}{1}{1}{-q} \cdot \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
-\EndWhile
-\State \Return $(s, U, V)$
-\EndProcedure
-\end{algorithmic}
-\end{frame}
-
-
-% OUR XGCD
-\begin{frame}
-\frametitle{Our Left-to-Right Binary XGCD}
-\begin{algorithmic}[1]
-\Procedure{Our\_L2R\_XGCD}{$a, b$} \Comment{$a, b \in \ZZgez$}
-\State $\matrixThreeTwo{s}{U}{V}{t}{X}{Y} \gets \matrixThreeTwo{a}{1}{0}{b}{0}{1}$
-\While {$t > 0$}
-	\State $k \gets $ \Call{NumBits}{$s$} - \Call{NumBits}{$t$}
-	\State subtract $2^k$ times the second row from the first
-	\If {$s < 0$} negate the first row \EndIf
-	\If {$s < t$} swap the rows of the matrix \EndIf
-\EndWhile
-\State \Return $(s, U, V)$
-\EndProcedure
-\end{algorithmic}
-\end{frame}
 
 % OUR PXGCD
 \begin{frame}
@@ -833,14 +730,6 @@ for the largest $s$ dividing both $a$ and $b$.
 \end{frame}
 
 
-% BINARY XGCD OPTIMIZATION
-\begin{frame}
-\frametitle{Binary XGCD Optimizations}
-\framesubtitle{64-bit simplified left-to-right binary XGCD}
-\begin{figure}
-\includegraphics[scale=0.86]{xgcd-binary-optimizations-64}
-\end{figure}
-\end{frame}
 
 % LEFT-TO-RIGHT BINARY XGCDs
 \begin{frame}
@@ -936,81 +825,6 @@ The problem is $a_1 \le \sqrt{|\Delta|/3}$ so ${a_1}^2 \le |\Delta|/3$.
 \end{figure}
 \end{frame}
 
-% EXPONENTIATION
-\begin{frame}
-\frametitle{Exponentiation by Odd Power Primorials}
-The goal is to compute
-\[
-\aclass ^ E
-\]
-for some ideal class $\aclass$ and exponent
-\[
-	E = \prod_{i=2}^k {p_i}^{e_i}
-\]
-where $p_i$ is the $\ith$ prime.
-\end{frame}
-
-
-% EXPONENTIATION TECHNIQUES
-\begin{frame}
-\frametitle{Representations Tested}
-Representations tested:
-\begin{itemize}
-\item Binary, Non-Adjacent Form (for reference)
-\item Right-to-Left and $2^2 3^2$ Windowed Right-to-Left (Ciet et al.).
-\item Left-to-Right (Berth{\'e} and Imbert).
-\item Pruned Trees (Doche and Habsieger).
-\item Our Left-to-Right Best Approximations \break (combines Left-to-Right and Pruned Trees)
-\end{itemize}
-\end{frame}
-
-% HOW TO EXPONENTIATE
-\begin{frame}
-\begin{figure}
-\includegraphics[scale=0.46]{yao1}
-\end{figure}
-\end{frame}
-
-
-% L2R BEST APPROXIMATIONS
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-Left-to-Right best approximations is a technique combining the greedy approach of Berth{\'e} and Imbert with the tree based approach of Doche and Habsieger.
-\begin{itemize}
-\item Iterate on a set of partial representations $x + \sum s_i2^{a_i}3^{b_i}$.
-\item Keep the best $2^a 3^b$ approximations for each $x$.
-\item Squares and cubes are bound $a \le A$, $b \le B$, and the bounds $A$ and $B$ are iterated.
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- First Iteration on 777}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-777}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example -- Second Iteration on 9, 48, 87, and 129}
-\begin{figure}
-\includegraphics[scale=0.84]{best-approx-9-48-87-129}
-\end{figure}
-\end{frame}
-\begin{frame}
-\frametitle{Left-to-Right Best Approximations}
-\framesubtitle{Example Results}
-2,3 Representations for $E=777$:
-\begin{align*}
-2^8 3^1 + 2^0 3^2 && \textrm{8 squares, 2 cubes, 1 multiplication} \\
-2^0 3^6 + 2^4 3^1 && \textrm{4 squares, 6 cubes, 1 multiplication} \\
-2^8 3^1 + 2^3 3^0 + 2^0 3^0 && \textrm{8 squares, 1 cube, 2 multiplications} \\
-2^3 3^4 + 2^7 3^0 + 2^0 3^0 && \textrm{7 squares, 4 cubes, 2 multiplications}
-\end{align*}
-
-\bigskip
-$2^8 3^1 + 2^3 3^0 + 2^0 3^0$ possibly preferred since multiplication is cheaper than squaring.
-\end{frame}
 
 % ESTIMATES FOR MANY SIZES
 \begin{frame}
