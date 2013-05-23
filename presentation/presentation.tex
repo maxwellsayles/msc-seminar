@@ -118,6 +118,7 @@ What is SuperSPAR?
 
 \begin{frame}
 \frametitle{Binary Quadratic Forms}
+Ideal class group originally studied by Gauss.
 \begin{itemize}
 \item $Q(x, y) = ax^2 + bxy + cy^2$
 \item $\Delta = b^2 - 4ac$
@@ -128,7 +129,7 @@ What is SuperSPAR?
 \frametitle{Equivalence of Forms}
 Two forms are equivalent
 \[
-Q(x, y) \sim Q'(x,y)
+Q(x, y) \sim Q'(x',y')
 \]
 if there exists an invertible integral linear transformation
 \begin{align*}
@@ -144,6 +145,70 @@ ax^2 + bxy + cy^2
 	&=& a'{x'}^2 + b'x'y' + c'{y'}^2
 \end{eqnarray*}
 \end{frame}
+
+% EQUIVALENCE EXAMPLE
+\begin{frame}
+\frametitle{Example of Equivalent Forms}
+\[
+92x^2-26xy+6y^2 ~ \sim ~ 6{x'}^2+2x'y'+64{y'}^2
+\]
+given by the transformation
+\[
+\matrixtt{\alpha}{\beta}{\gamma}{\delta} = \matrixtt{2}{1}{1}{0}
+\]
+\end{frame}
+
+% EQUIVALENCE CLASS
+\begin{frame}
+\frametitle{Equivalence Class of Binary Quadratic Forms}
+An \emph{equivalence class} is the set of all forms equivalent to a given form.
+
+\bigbreak
+Similar to modular arithmetic:
+\[
+3 \equiv 10, 17, 24, 31, 38, 45, ... \pmod 7
+\]
+\end{frame}
+
+% REDUCED FORMS
+\begin{frame}
+Work in reduced forms:
+\[
+-a < b \le a < c \textrm{ or } 0 \le b \le a = c.
+\]
+
+\bigbreak
+Bounds:
+\[
+-\Delta = 4ac - b^2 \ge 4ac-a^2 \ge 3a^2
+\]
+gives
+\[
+|b| \le a \le \sqrt{|\Delta|/3} \textrm{ and } c \le |\Delta|/4.
+\]
+\end{frame}
+
+% IDEAL REDUCTION
+\begin{frame}
+\frametitle{Ideal Reduction}
+\begin{algorithmic}[1]
+\Require $(a, b, c)$ and $\Delta$.
+\While {$a > c$ or $b > a$ or $b \le -a$}
+	\If {$a > c$}
+		\State swap $a$ with $c$ and set $b \gets -b$
+	\EndIf
+	\If {$b > a$ or $b \le -a$}
+		\State $b \gets b'$ such that $-a < b' \le a$ and $b' \equiv b \pmod{2a}$
+		\State $c \gets (b^2-\Delta)/4a$
+	\EndIf
+\EndWhile
+\If {$a=c$ and $b < 0$}
+	\State $b \gets -b$
+\EndIf
+\State \Return $(a, b, c)$
+\end{algorithmic}
+\end{frame}
+
 
 % IDEAL MULTIPLICATION
 \begin{frame}
@@ -178,12 +243,63 @@ Split $s = \gcd(a_1, a_2, (b_1+b_2)/2) = Ya_1 + Va_2 + W(b_1+b_2)/2$ into two co
 \end{algorithmic}
 \end{frame}
 
-% IDEAL REDUCTION
+% NUCOMP
 \begin{frame}
-\frametitle{Ideal Reduction}
-Note $-\Delta = 4ac - b^2 \ge 4ac-a^2 \ge 3a^2$. \\
-$\Rightarrow |b| \le a \le \sqrt{|\Delta|/3}$
+\frametitle{Simultaneous Multiplication and Reduction}
+NUCOMP -- due to Shanks with improvements by Jacobson, Williams, Imbert, and Schmidt.
+\begin{itemize}
+\item Reduction is the simple continued fraction expansion of $b/2a$.
+\item $a_1, a_2 \le \sqrt{|\Delta|/3}$, but the product $a \le |\Delta|/3$.
+\item $b/2a \approx sU/a_1$.
+\item Derive the reduced product from the simple continued fraction expansion.
+\item Simplifies when squaring and cubing.
+\end{itemize}
 \end{frame}
+
+% IDENTITY AND INVERSE
+\begin{frame}
+\frametitle{Identity and Inverse}
+Identity (denoted $1_G$):
+\[
+(a, b, c) = \begin{cases}
+  (1, 0, \Delta/4) & \textrm{when } \Delta \equiv 0 \pmod 4 \\
+  (1, 1, (1-\Delta)/4) & \textrm{when } \Delta \equiv 1 \pmod 4
+\end{cases}
+\]
+
+\bigbreak
+Inverse:
+\[
+(a, b, c)^{-1} = (a, -b, c)
+\]
+\end{frame}
+
+% AMBIGUOUS FORM
+\begin{frame}
+\frametitle{How Does this Factor an Integer?}
+Ambiguous form is any form $q$ such that $q^2 = 1_G$.
+
+\bigbreak
+Three varieties:
+\begin{align*}
+(a, 0, c) &\Rightarrow \Delta = -4ac \\
+(a, a, c) &\Rightarrow \Delta = a^2 - 4ac = a(a - 4c) \\
+(a, b, a) &\Rightarrow \Delta = b^2 - 4a^2 = (b+2a)(b-2a)
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Finding an Ambiguous Form}
+Let $h = \ord(q)$ such that $q^h = 1_G$.
+
+\bigbreak
+If $h$ is even, then let $h'$ be the odd part of $h$ and
+\[
+	q^{h'}^{\left(2^j\right)}
+\]
+is an ambiguous form.
+\end{frame}
+
 
 
 % OVERVIEW
@@ -437,6 +553,8 @@ All times are based on the average.  The measurement of improvement is an averag
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 % SPAR/SUPERSPAR
 \begin{frame}
