@@ -91,7 +91,8 @@
     \usebeamerfont{author in head/foot} \hspace*{2em} SuperSPAR \hspace*{2em}
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
-    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
+      \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ 61 \hspace*{2em}
+%    \usebeamerfont{title in head/foot} \hspace*{2em} \insertframenumber ~/ \inserttotalframenumber \hspace*{2em}
   \end{beamercolorbox}}%
   \vskip0pt%
 }
@@ -105,7 +106,7 @@
 \begin{frame}
 \frametitle{Overview}
 What is SuperSPAR?
-\begin{itemize}
+\begin{itemize}[<+->]
 \item Improves upon SPAR (named after Shanks, Pollard, Atkin, and Rickert).
 \item Based on arithmetic in the ideal class group of imaginary quadratic number fields.
 \item Uses the order of an element in this group to factor an integer.
@@ -115,12 +116,14 @@ What is SuperSPAR?
 \begin{frame}
 \frametitle{Binary Quadratic Forms}
 Ideal class group originally studied by Gauss.
-\begin{itemize}[<+->]
-\item $Q(x, y) = ax^2 + bxy + cy^2$
-\item $Q(x, y) = 7x^2 + 3xy + 5y^2 = \{5,7,9,15,20,21,27,28,33,36,39,43,45,55,59,60,...\}$
-\item $\Delta = b^2 - 4ac$
-\item $\Delta = 3^2 - 4 \cdot 7 \cdot 5 = -131$
-\item Extremely rich theory.
+\begin{itemize}
+\item<2-> $Q(x, y) = ax^2 + bxy + cy^2$
+\item<3-> $Q(x, y) = 2x^2 + xy + 18y^2 \break
+= \{2,8,18,19,21,24,28,32,33,39,46,50,54,63,72,...\}$
+\item<4-> $\Delta = b^2 - 4ac$
+\item<5-> $\Delta = 1^2 - 4 \cdot 2 \cdot 18 = -143$
+\item<6-> Extremely rich theory.
+\item<7-> Different properties when $\Delta < 0$ or $\Delta > 0$.
 \end{itemize}
 \end{frame}
 
@@ -195,6 +198,10 @@ gives
 \[
 |b| \le a \le \sqrt{|\Delta|/3} \textrm{ and } c \le |\Delta|/4.
 \]
+
+\bigbreak
+\smallfont
+${}^*$ Only holds for $\Delta < 0$.
 \end{frame}
 
 % IDEAL REDUCTION
@@ -216,6 +223,32 @@ gives
 \EndIf
 \State \Return $(a, b, c)$
 \end{algorithmic}
+\end{frame}
+
+% REDUCTION EXAMPLE
+\begin{frame}
+\frametitle{REDUCTION EXAMPLE}
+\begin{align*}
+Q(x, y) &= 72x^2 + 130xy + 64y^2 \\
+&\sim 64x^2 -130xy + 72y^2 \\
+&\sim 64x^2 -2xy + 6y^2 \\
+&\sim 6x^2 +2xy +64y^2
+\end{align*}
+\end{frame}
+
+% CONCEPTUAL MULTIPLICATION
+\begin{frame}
+\frametitle{Multiplication of Forms}
+\begin{align*}
+Q_1(x, y) &= 2x^2 + xy + 18y^2 \\
+&= \{2,8,18,19,21,24,28,32,33,39,46,50,54,63,72,...\} \\
+Q_2(x, y) &= 3x^2 +xy +12y^2 \\
+&= \{3,12,14,16,22,26,27,36,42,48,49,53,56,64,69,...\} \\
+\\
+R(x,y) &= Q_1(x,y) \cdot Q_2(x,y) \\
+&= 6x^2 + xy + 6y^2 \\
+&= \{6,24,28,32,44,52,54,57,63,72,84,96,98,99,112...\}
+\end{align*}
 \end{frame}
 
 
@@ -720,6 +753,22 @@ for
 The order of $q''$ is likely coprime to $E$.
 \end{frame}
 
+% HOW TO PICK PARAMS
+\begin{frame}
+\frametitle{How to Pick the Exponent and the Order Bound}
+Exponent: Let $p_t \approx N^{1/2r}$ and
+\[
+	E = \prod_{i=2}^t {p_i}^{e_i}
+\]
+where $e_i = \log_{p_i} {p_t}^2$.
+
+\bigbreak
+Search bound: Maximize $w$ such that $m\phi(P_w) \approx p_t$.
+
+\bigbreak
+How to pick $r$ ?
+\end{frame}
+
 % Smoothness
 \begin{frame}
 \frametitle{Smoothness of the Order}
@@ -734,21 +783,23 @@ u^{-u}.
 
 \bigbreak\bigbreak\bigbreak
 \smallfont
-See Sutherland for details.
+${}^*$ See Sutherland for details.
 \end{frame}
 
-% HOW TO PICK PARAMS
+% MINIMIZE EXPECTED RUNTIME
 \begin{frame}
-\frametitle{How to Pick the Exponent and the Order Bound}
-Exponent: Let $p_t \approx N^{1/2r}$ and
-\[
-	E = \prod_{i=2}^t {p_i}^{e_i}
-\]
-where $e_i = \log_{p_i} {p_t}^2$.
+\frametitle{Minimize Expected Running Time}
+Assume the order of forms are like random integers.
 
-\bigbreak
-Search bound: Maximize $w$ such that $m\phi(P_w) \approx p_t$.
+\begin{itemize}
+\item<2-> Group operations per try is $O(N^{1/2r})$
+\item<3-> Assume order is random $h \in [1, N^{1/2}]$
+\item<4-> Probability of factoring is $r^{-r}$
+\item<5-> Expectation is $O(r^r N^{1/2r})$
+\item<6-> Minimized for $r = \sqrt{\ln N / \ln \ln N}$
+\end{itemize}
 \end{frame}
+
 
 % FAILURE
 \begin{frame}
